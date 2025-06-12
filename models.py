@@ -165,10 +165,20 @@ class Test(BaseModel):
 class Action(BaseModel):
     name: str
     route: str
+    _web_api = None
+
+    def set_web_api(self, web_api):
+        self._web_api = web_api
 
     def do(self):
         print(f"Do {self.name}")
-        requests.get(self.route)
+        try:
+            response = requests.get(self.route)
+            if self._web_api:
+                self._web_api.log_action(self.name, self.route)
+            logger.info(f"Action {self.name} executed: {response.status_code}")
+        except Exception as e:
+            logger.error(f"Action {self.name} failed: {e}")
 
 
 class Rule(BaseModel):

@@ -12,4 +12,7 @@ dependencies = [
     "requests>=2.32.3",
     "jsonpath-ng",
     "ipdb>=0.13.13",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "watchdog>=3.0.0",
 ]
