@@ -3,7 +3,7 @@ import operator
 import requests
 import logging
 from pydantic import BaseModel, Field, field_validator, ConfigDict, PrivateAttr
-from typing import Callable
+from typing import Callable, Literal
 from collections import deque, UserDict
 import statistics
 from typing import Annotated, Deque, Union, Optional, Tuple
@@ -33,13 +33,13 @@ class Sensors(BaseModel, UserDict):
 
 
 SENSORS = {}
-ALLOWED_TYPES = ("float", "int", "str", "bool")
 
 
 class Sensor(BaseModel):
     name: str = Field(title="Sensor name")
     route: str = Field(title="mqtt path")
-    type: str = Field()
+    return_type: Literal["float", "int", "str", "bool"] = "float"
+    type: Literal["mqtt", "http", "time"] = "mqtt"
     connected: bool = False
     ready: bool = False
     values: Annotated[Deque[float], Field(deque(maxlen=10), max_length=10)]
@@ -47,21 +47,11 @@ class Sensor(BaseModel):
     def __str__(self):
         return str(self.name)
 
-    @field_validator("type", mode="after")
-    @classmethod
-    def allowed_type(cls, v):
-        valid_operators = VALID_OPERATOR
-        if v not in valid_operators:
-            raise ValueError(
-                f"Invalid operator '{v}'. Must be one of: {list(valid_operators.keys())}"
-            )
-        return v
-
     @property
     def mean(self) -> float | int | bool | str | None:
         if not self.values:
             return None
-        if self.type == "bool":
+        if self.return_type == "bool":
             return self.values[-1]
         return float(statistics.mean(self.values))
 
@@ -75,10 +65,11 @@ class Sensor(BaseModel):
 
 
 class MqttSensor(Sensor):
-    pass
+    type: Literal["mqtt"] = "mqtt"
 
 
 class HttpSensor(Sensor):
+    type: Literal["http"] = "http"
 
     def get_value(self):
         value = requests.get(self.route)
@@ -86,7 +77,8 @@ class HttpSensor(Sensor):
 
 
 class TimeSensor(Sensor):
-    route = ""
+    type: Literal["time"] = "time"
+    route: str = ""
 
     @property
     def mean(self):
@@ -100,11 +92,27 @@ def add_sensor(sensor):
 
 
 class SensorD(BaseModel):
-    ss: dict[str, Union[MqttSensor, HttpSensor, TimeSensor]] = {"time": TimeSensor()}
+    ss: dict[str, Union[MqttSensor, HttpSensor, TimeSensor]] = {
+        "time": TimeSensor(name="time", return_type="str")
+    }
 
-    def add(self, sensor: MqttSensor):
+    def add(self, sensor_data: Union[dict, MqttSensor, HttpSensor, TimeSensor]):
+        if isinstance(sensor_data, dict):
+            sensor_type = sensor_data.get("type", "mqtt")
+            if sensor_type == "mqtt":
+                sensor = MqttSensor(**sensor_data)
+            elif sensor_type == "http":
+                sensor = HttpSensor(**sensor_data)
+            elif sensor_type == "time":
+                sensor = TimeSensor(**sensor_data)
+            else:
+                raise ValueError(f"Unknown sensor type: {sensor_type}")
+        else:
+            sensor = sensor_data
+
         self.ss[sensor.route] = sensor
         self.ss[sensor.name] = sensor
+        return sensor
 
     def __getitem__(self, key):
         return self.ss[key]
@@ -131,7 +139,7 @@ VALID_OPERATOR = {
 
 
 class Test(BaseModel):
-    sensor: Union[MqttSensor, TimeSensor]
+    sensor: Union[MqttSensor, HttpSensor, TimeSensor]
     op: str
     _operator: Callable = PrivateAttr()
 
@@ -141,12 +149,12 @@ class Test(BaseModel):
 
     value: Union[float, str, int]
 
+    @field_validator("op", mode="after")
+    @classmethod
     def validate_op(cls, v):
-        valid_operators = VALID_OPERATOR
+        valid_operators = VALID_OPERATOR.keys()
         if v not in valid_operators:
-            raise ValueError(
-                f"Invalid operator '{v}'. Must be one of: {list(valid_operators.keys())}"
-            )
+            raise ValueError(f"Invalid operator '{v}'. Must be one of: {valid_operators}")
         return v
 
     def __init__(self, **data):
@@ -201,6 +209,6 @@ class Mqtt(BaseModel):
 
 class Config(BaseModel):
     mqtt: Mqtt
-    sensors: list[MqttSensor]
+    sensors: list[dict]
     actions: list[Action]
     rules: list[ConfigRule]
