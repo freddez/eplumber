@@ -137,13 +137,3 @@ class Eplumber(BaseModel):
         # Set web_api reference for all actions
         for rule in self.rules:
             rule.action.set_web_api(self.web_api)
-
-    def run(self):
-        while True:
-            for rule in self.rules:
-                valid_rule = False
-                for test in rule.tests:
-                    if test.operator and test.operator(test.sensor.mean, test.value):
-                        valid_rule = True
-                if valid_rule:
-                    rule.action.do()
