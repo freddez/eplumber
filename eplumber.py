@@ -117,7 +117,7 @@ class Eplumber(BaseModel):
     def _poll_http_sensors(self):
         for sensor in self.http_sensors:
             try:
-                sensor.get_value()
+                sensor.get_add_value()
             except Exception as e:
                 print(f"Error polling HTTP sensor {sensor.name}: {e}")
 

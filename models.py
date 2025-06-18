@@ -42,7 +42,7 @@ class Sensor(BaseModel):
     return_type: Literal["float", "int", "str", "bool"] = "float"
     connected: bool = False
     ready: bool = False
-    values: Annotated[Deque[float], Field(deque(maxlen=10), max_length=10)]
+    values: Annotated[Deque[float | bool], Field(deque(maxlen=10), max_length=10)]
 
     def __str__(self):
         return str(self.name)
@@ -73,7 +73,7 @@ class HttpSensor(Sensor):
     type: Literal["http"] = "http"
     json_path: Optional[str] = None
 
-    def get_value(self):
+    def get_add_value(self):
         try:
             response = requests.get(self.route, timeout=10)
             response.raise_for_status()

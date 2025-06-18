@@ -30,7 +30,7 @@
           >
             <strong>{{ sensor.name }}</strong> ({{ sensor.type }}) <br />Route:
             {{ sensor.route }} <br />Current:
-            <strong>{{ sensor.mean || "N/A" }}</strong> <br />Values:
+            <strong>{{ sensor.mean !== null && sensor.mean !== undefined ? sensor.mean : "N/A" }}</strong> <br />Values:
             {{ sensor.value_count }}/10 <br />Status:
             {{ sensor.connected ? "🟢 Connected" : "🔴 Disconnected" }}
           </div>

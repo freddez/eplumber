@@ -32,40 +32,19 @@ class WebAPI:
                 unique_sensors.add(id(sensor))
 
                 try:
-                    mean_value = sensor.mean
-                    last_value = sensor.last if sensor.values else None
-                    values_list = list(sensor.values)
-
-                    # Ensure all values are JSON serializable
-                    safe_mean = (
-                        float(mean_value)
-                        if mean_value is not None and isinstance(mean_value, (int, float))
-                        else mean_value
-                    )
-                    safe_last = (
-                        float(last_value)
-                        if last_value is not None and isinstance(last_value, (int, float))
-                        else last_value
-                    )
-                    safe_values = [
-                        float(v) if isinstance(v, (int, float)) else v for v in values_list
-                    ]
-
+                    values = list(sensor.values)
                     sensor_data = {
-                        "name": str(sensor.name),
-                        "route": str(sensor.route),
-                        "type": str(sensor.type),
-                        "return_type": str(sensor.return_type),
-                        "connected": bool(sensor.connected),
-                        "ready": bool(sensor.ready),
-                        "mean": safe_mean,
-                        "last": safe_last,
-                        "values": safe_values,
-                        "value_count": len(values_list),
+                        "name": sensor.name,
+                        "route": sensor.route,
+                        "type": sensor.type,
+                        "return_type": sensor.return_type,
+                        "connected": sensor.connected,
+                        "ready": sensor.ready,
+                        "mean": sensor.mean,
+                        "last": sensor.last,
+                        "values": list(values),
+                        "value_count": len(values),
                     }
-
-                    # Test JSON serialization before adding
-                    json.dumps(sensor_data)
                     sensors_data.append(sensor_data)
 
                 except Exception as e:
@@ -120,13 +99,11 @@ class WebAPI:
                             test_value = test.value
                             current_value = test.sensor.mean
 
-                            # Calculate pass/fail
                             if current_value is not None and test.operator:
                                 passes = bool(test.operator(current_value, test_value))
                             else:
                                 passes = False
 
-                            # Convert all values to JSON-safe types
                             if isinstance(test_value, (int, float, str, bool)):
                                 safe_test_value = test_value
                             else:
