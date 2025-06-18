@@ -9,6 +9,7 @@ import statistics
 from typing import Annotated, Deque, Union, Optional, Tuple
 import paho.mqtt.client as mqtt_client
 import mqtt
+from jsonpath_ng import parse
 
 logger = logging.getLogger(__name__)
 
@@ -70,10 +71,43 @@ class MqttSensor(Sensor):
 
 class HttpSensor(Sensor):
     type: Literal["http"] = "http"
+    json_path: Optional[str] = None
 
     def get_value(self):
-        value = requests.get(self.route)
-        self.add(value)
+        try:
+            response = requests.get(self.route, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            if self.json_path:
+                jsonpath_expr = parse(self.json_path)
+                matches = jsonpath_expr.find(data)
+                if matches:
+                    value = matches[0].value
+                else:
+                    logging.error(
+                        f"JSON path '{self.json_path}' not found in response for {self.name}"
+                    )
+                    return
+            else:
+                value = data
+            if self.return_type == "bool":
+                if isinstance(value, bool):
+                    parsed_value = value
+                elif isinstance(value, str):
+                    parsed_value = value.lower() in ("true", "1", "on", "yes")
+                else:
+                    parsed_value = bool(value)
+            elif self.return_type == "int":
+                parsed_value = int(float(value))
+            elif self.return_type == "float":
+                parsed_value = float(value)
+            else:
+                parsed_value = str(value)
+            self.add(parsed_value)
+            logging.debug(f"HTTP sensor {self.name}: {parsed_value}")
+        except Exception as e:
+            logging.error(f"Error fetching HTTP sensor {self.name}: {e}")
+            self.connected = False
 
 
 class TimeSensor(Sensor):
