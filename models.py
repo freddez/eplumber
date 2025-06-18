@@ -214,12 +214,12 @@ class Action(BaseModel):
         self._web_api = web_api
 
     def do(self):
-        print(f"Do {self.name}")
+        logger.info(f"Do {self.name}")
         try:
             response = requests.get(self.route)
             if self._web_api:
                 self._web_api.log_action(self.name, self.route)
-            logger.info(f"Action {self.name} executed: {response.status_code}")
+            logger.debug(f"Action {self.name} executed: {response.status_code}")
         except Exception as e:
             logger.error(f"Action {self.name} failed: {e}")
 

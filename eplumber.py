@@ -2,12 +2,15 @@ from pydantic import BaseModel, ConfigDict
 from pathlib import Path
 import appdirs
 import json
+import logging
 from typing import Optional
 import models
 import threading
 from web_api import WebAPI
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+logger = logging.getLogger(__name__)
 
 CFG_FILENAME = "eplumber.json"
 
@@ -19,7 +22,7 @@ class ConfigFileHandler(FileSystemEventHandler):
 
     def on_modified(self, event):
         if not event.is_directory and event.src_path.endswith(CFG_FILENAME):
-            print(f"Config file changed: {event.src_path}")
+            logger.info(f"Config file changed: {event.src_path}")
             self.eplumber.reload_config()
 
 
@@ -45,7 +48,7 @@ class Eplumber(BaseModel):
                 cfg_json = json.load(cfg_file)
                 break
         if cfg_json is None:
-            print(f"{CFG_FILENAME} not found")
+            logger.error(f"{CFG_FILENAME} not found")
             return
 
         self._load_config_data(cfg_json)
@@ -91,7 +94,7 @@ class Eplumber(BaseModel):
     def reload_config(self):
         """Reload configuration from file"""
         if not self._config_path or not self._config_path.exists():
-            print("Config file not found for reload")
+            logger.error("Config file not found for reload")
             return
 
         try:
@@ -99,9 +102,9 @@ class Eplumber(BaseModel):
                 cfg_json = json.load(cfg_file)
             self._load_config_data(cfg_json)
             self._start_http_polling()
-            print("Configuration reloaded successfully")
+            logger.info("Configuration reloaded successfully")
         except Exception as e:
-            print(f"Error reloading config: {e}")
+            logger.error(f"Error reloading config: {e}")
 
     def _start_file_watcher(self):
         """Start watching the config file for changes"""
@@ -112,14 +115,14 @@ class Eplumber(BaseModel):
                 handler, str(self._config_path.parent), recursive=False
             )
             self._file_observer.start()
-            print(f"Watching config file: {self._config_path}")
+            logger.info(f"Watching config file: {self._config_path}")
 
     def _poll_http_sensors(self):
         for sensor in self.http_sensors:
             try:
                 sensor.get_add_value()
             except Exception as e:
-                print(f"Error polling HTTP sensor {sensor.name}: {e}")
+                logger.error(f"Error polling HTTP sensor {sensor.name}: {e}")
 
         self._http_timer = threading.Timer(10.0, self._poll_http_sensors)
         self._http_timer.start()
@@ -132,7 +135,7 @@ class Eplumber(BaseModel):
         if not self.web_api:
             self.web_api = WebAPI(self)
             self.web_api.start_server()
-            print("🌐 Web interface available at http://localhost:8000")
+            logger.info("🌐 Web interface available at http://localhost:8000")
 
         # Set web_api reference for all actions
         for rule in self.rules:

@@ -7,6 +7,9 @@ import threading
 import uvicorn
 from collections import deque
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class WebAPI:
@@ -48,7 +51,7 @@ class WebAPI:
                     sensors_data.append(sensor_data)
 
                 except Exception as e:
-                    print(
+                    logger.error(
                         f"Error serializing sensor {getattr(sensor, 'name', 'unknown')}: {e}"
                     )
                     continue
