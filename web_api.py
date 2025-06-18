@@ -42,7 +42,7 @@ class WebAPI:
                         "ready": sensor.ready,
                         "mean": sensor.mean,
                         "last": sensor.last,
-                        "values": list(values),
+                        "values": values,
                         "value_count": len(values),
                     }
                     sensors_data.append(sensor_data)
@@ -128,11 +128,13 @@ class WebAPI:
 
                         except Exception:
                             continue
-
+                    all_tests_pass = bool(all(t["passes"] for t in rule_tests))
+                    if all_tests_pass:
+                        rule.action.do()
                     rule_dict = {
                         "action_name": f"{rule.name} ({rule.action.name})",
                         "tests": rule_tests,
-                        "all_tests_pass": bool(all(t["passes"] for t in rule_tests)),
+                        "all_tests_pass": all_tests_pass,
                     }
                     response_data.append(rule_dict)
 
