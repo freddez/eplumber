@@ -4,7 +4,7 @@ import requests
 import logging
 from pydantic import BaseModel, Field, field_validator, ConfigDict, PrivateAttr
 from typing import Callable, Literal
-from collections import deque, UserDict
+from collections import deque
 import statistics
 from typing import Annotated, Deque, Union, Optional, Tuple
 import paho.mqtt.client as mqtt_client
@@ -13,7 +13,7 @@ import mqtt
 logger = logging.getLogger(__name__)
 
 
-class Sensors(BaseModel, UserDict):
+class Sensors(BaseModel):
     mqtt: str = ""
 
     def add_mqtt(self):
@@ -25,11 +25,11 @@ class Sensors(BaseModel, UserDict):
     def start(self):
         pass
 
-    def __init__(self, **data):
-        # Let BaseModel handle validation and assignment
-        super().__init__(**data)
-        # Now initialize UserDict with model's dict
-        UserDict.__init__(self, self.dict())
+    # def __init__(self, **data):
+    #     # Let BaseModel handle validation and assignment
+    #     super().__init__(**data)
+    #     # Now initialize UserDict with model's dict
+    #     # UserDict.__init__(self, self.dict())
 
 
 SENSORS = {}
@@ -39,7 +39,6 @@ class Sensor(BaseModel):
     name: str = Field(title="Sensor name")
     route: str = Field(title="mqtt path")
     return_type: Literal["float", "int", "str", "bool"] = "float"
-    type: Literal["mqtt", "http", "time"] = "mqtt"
     connected: bool = False
     ready: bool = False
     values: Annotated[Deque[float], Field(deque(maxlen=10), max_length=10)]
@@ -61,6 +60,7 @@ class Sensor(BaseModel):
 
     def add(self, value):
         logging.debug(f"{self.name}.add({value}) mean:{self.mean}")
+        self.connected = True
         self.values.append(value)
 
 
@@ -79,6 +79,7 @@ class HttpSensor(Sensor):
 class TimeSensor(Sensor):
     type: Literal["time"] = "time"
     route: str = ""
+    connected: bool = True
 
     @property
     def mean(self):
@@ -134,7 +135,6 @@ VALID_OPERATOR = {
     ">=": operator.ge,
     "==": operator.eq,
     "!=": operator.ne,
-    # Add more operators as needed
 }
 
 
@@ -182,6 +182,7 @@ class Action(BaseModel):
 
 
 class Rule(BaseModel):
+    name: str
     tests: list[Test]
     action: Action
 
@@ -204,8 +205,6 @@ class Mqtt(BaseModel):
         mqttc = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION2)
         mqttc.on_connect = mqtt.on_connect
         mqttc.on_message = mqtt.on_message
-        # mqttc.on_subscribe = on_subscribe
-        # mqttc.on_unsubscribe = on_unsubscribe
 
         mqttc.user_data_set(sensord)
         if self.username:
