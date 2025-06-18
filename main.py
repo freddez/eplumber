@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     e = Eplumber()
     e.get_config()
 

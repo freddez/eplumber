@@ -1,6 +1,6 @@
 def on_message(client, sensord, message):
     route = message.topic
-    value = float(message.payload)
+    value = message.payload
     print(f"Message[{route}] : {value}")
     sensord.add_value(route, value)
 

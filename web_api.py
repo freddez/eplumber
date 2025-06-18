@@ -211,7 +211,6 @@ class WebAPI:
             return FileResponse("static/favicon.svg", media_type="image/svg+xml")
 
     def log_action(self, action_name: str, route: str):
-        """Log an action execution"""
         self.action_history.append(
             {
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -221,10 +220,8 @@ class WebAPI:
         )
 
     def start_server(self, host="0.0.0.0", port=8000):
-        """Start the FastAPI server in a separate thread"""
-
         def run_server():
-            uvicorn.run(self.app, host=host, port=port, log_level="debug")
+            uvicorn.run(self.app, host=host, port=port, log_level="info")
 
         server_thread = threading.Thread(target=run_server, daemon=True)
         server_thread.start()
