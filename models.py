@@ -53,6 +53,8 @@ class Sensor(BaseModel):
 
     @property
     def last(self):
+        if not self.values:
+            return None
         return self.values[-1]
 
     def _json_path_value(self, data):
