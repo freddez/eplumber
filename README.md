@@ -30,7 +30,7 @@ git clone https://github.com/freddez/eplumber
 cd eplumber
 ```
 
-2. Install dependencies using [uv][https://docs.astral.sh/uv/]:
+2. Install dependencies using [uv](https://docs.astral.sh/uv/):
 ```bash
 uv sync
 ```
