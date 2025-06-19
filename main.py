@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 def get_log_level(level_str):
-    """Convert string log level to logging constant"""
     levels = {
         "debug": logging.DEBUG,
         "info": logging.INFO,
