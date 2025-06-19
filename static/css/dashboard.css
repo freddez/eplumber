@@ -134,6 +134,27 @@ body {
   font-size: 12px;
 }
 
+.rule.inactive {
+  border-color: #6c757d;
+  background: #f8f9fa;
+  opacity: 0.7;
+}
+
+.rule.inactive .rule-name::before {
+  content: '⚫';
+  font-size: 12px;
+}
+
+.inactive-badge {
+  background: #6c757d;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
 .test {
   margin: 8px 0;
   padding: 12px 16px;

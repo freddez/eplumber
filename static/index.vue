@@ -31,8 +31,11 @@
 
         <div class="panel">
           <h2>⚡ Rules</h2>
-          <div v-for="(rule, index) in rules" :key="index" :class="['rule', rule.all_tests_pass ? 'active' : '']">
-            <div class="rule-name">{{ rule.action_name.split(' ⇒ ')[0] }}</div>
+          <div v-for="(rule, index) in rules" :key="index" :class="['rule', rule.all_tests_pass ? 'active' : '', !rule.active ? 'inactive' : '']">
+            <div class="rule-name">
+              {{ rule.action_name.split(' ⇒ ')[0] }}
+              <span v-if="!rule.active" class="inactive-badge">INACTIVE</span>
+            </div>
             <div
               v-for="test in rule.tests"
               :key="test.sensor_name"
