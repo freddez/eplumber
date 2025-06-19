@@ -5,14 +5,13 @@ import json
 import logging
 from typing import Optional
 import models
+from notification import send_startup_notification
 import threading
 from web_api import WebAPI
 
 logger = logging.getLogger(__name__)
 
 CFG_FILENAME = "eplumber.json"
-
-
 
 
 class Eplumber(BaseModel):
@@ -73,7 +72,10 @@ class Eplumber(BaseModel):
             # Set active to True if not specified or empty
             active = cfg_rule.active if cfg_rule.active is not None else True
             rule = models.Rule(
-                name=cfg_rule.name, tests=tests, action=action_d[cfg_rule.action], active=active
+                name=cfg_rule.name,
+                tests=tests,
+                action=action_d[cfg_rule.action],
+                active=active,
             )
             self.rules.append(rule)
 
@@ -86,7 +88,9 @@ class Eplumber(BaseModel):
 
         self.config.mqtt.set_client(self.sensord)
 
-
+        # Send startup notification
+        if recipients:
+            send_startup_notification(recipients)
 
     def _poll_http_sensors(self):
         for sensor in self.http_sensors:

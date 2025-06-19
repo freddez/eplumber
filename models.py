@@ -2,9 +2,6 @@ import datetime
 import operator
 import requests
 import logging
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from pydantic import BaseModel, Field, field_validator, ConfigDict, PrivateAttr
 from typing import Callable, Literal
 from collections import deque
@@ -14,6 +11,7 @@ import paho.mqtt.client as mqtt_client
 import mqtt
 import json
 from jsonpath_ng import parse
+from notification import send_action_notification
 
 logger = logging.getLogger(__name__)
 
@@ -221,38 +219,7 @@ class Action(BaseModel):
         self._recipients = recipients
 
     def _send_email_notification(self, rule_context=None):
-        if not self._recipients:
-            return
-
-        try:
-            msg = MIMEMultipart()
-            msg["From"] = "eplumber@localhost"
-            msg["To"] = ", ".join(self._recipients)
-            msg["Subject"] = f"Eplumber Action: {self.name}"
-
-            body = f"Action '{self.name}' has been executed.\nTime: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-
-            if rule_context:
-                body += f"Rule: {rule_context.name}\n\nTest Results:\n"
-                for test in rule_context.tests:
-                    current_value = test.sensor.mean
-                    if isinstance(current_value, float):
-                        current_value = round(current_value, 2)
-                    passes = (
-                        test.operator(current_value, test.value)
-                        if current_value is not None
-                        else False
-                    )
-                    status = "✅ PASS" if passes else "❌ FAIL"
-                    body += f"  {status} {test.sensor.name}: {current_value} {test.op} {test.value}\n"
-
-            msg.attach(MIMEText(body, "plain"))
-            server = smtplib.SMTP("localhost", 25)
-            server.sendmail("eplumber@localhost", self._recipients, msg.as_string())
-            server.quit()
-            logger.info(f"Email notification sent for action {self.name}")
-        except Exception as e:
-            logger.error(f"Failed to send email notification for action {self.name}: {e}")
+        send_action_notification(self._recipients, self.name, rule_context)
 
     def do(self, rule_context=None):
         logger.info(f"Do {self.name}")
