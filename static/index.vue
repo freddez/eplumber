@@ -25,9 +25,8 @@
             :key="sensor.name"
             :class="['sensor', sensor.connected ? 'connected' : 'disconnected']"
           >
-            <strong>{{ sensor.name }}</strong> ({{ sensor.type }}) <br />Route: {{ sensor.route }} <br />Current:
+            <strong>{{ sensor.name }}</strong> ({{ sensor.type }}) :
             <strong>{{ sensor.mean !== null && sensor.mean !== undefined ? sensor.mean : 'N/A' }}</strong>
-            <br />Values: {{ sensor.value_count }}/10 <br />Status:
           </div>
         </div>
 
@@ -40,7 +39,7 @@
               :key="test.sensor_name"
               :class="['test', test.passes ? 'passing' : 'failing']"
             >
-              {{ test.sensor_name }} {{ test.operator }} {{ test.value }} (current: {{ test.current_sensor_value }})
+              {{ test.sensor_name }} : {{ test.current_sensor_value }} {{ test.operator }} {{ test.value }}
               {{ test.passes ? '✅' : '❌' }}
             </div>
           </div>

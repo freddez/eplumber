@@ -43,9 +43,9 @@ class WebAPI:
                         "return_type": sensor.return_type,
                         "connected": sensor.connected,
                         "ready": sensor.ready,
-                        "mean": sensor.mean,
-                        "last": sensor.last,
-                        "values": values,
+                        "mean": round(sensor.mean, 2) if isinstance(sensor.mean, float) else sensor.mean,
+                        "last": round(sensor.last, 2) if isinstance(sensor.last, float) else sensor.last,
+                        "values": [round(v, 2) if isinstance(v, float) else v for v in values],
                         "value_count": len(values),
                     }
                     sensors_data.append(sensor_data)
@@ -116,7 +116,7 @@ class WebAPI:
                                 isinstance(current_value, (int, float, str, bool))
                                 or current_value is None
                             ):
-                                safe_current_value = current_value
+                                safe_current_value = round(current_value, 2) if isinstance(current_value, float) else current_value
                             else:
                                 safe_current_value = str(current_value)
 
@@ -135,7 +135,7 @@ class WebAPI:
                     if all_tests_pass:
                         rule.action.do()
                     rule_dict = {
-                        "action_name": f"{rule.name} ({rule.action.name})",
+                        "action_name": f"{rule.name} ⇒ {rule.action.name}",
                         "tests": rule_tests,
                         "all_tests_pass": all_tests_pass,
                     }
