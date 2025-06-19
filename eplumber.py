@@ -37,6 +37,10 @@ class Eplumber(BaseModel):
     web_api: Optional[WebAPI] = None
     _file_observer: Optional[Observer] = None
     _config_path: Optional[Path] = None
+    log_level: str = "info"
+
+    def __init__(self, log_level="info", **data):
+        super().__init__(log_level=log_level, **data)
 
     def get_config(self):
         cfg_json = None
@@ -136,7 +140,8 @@ class Eplumber(BaseModel):
     def _start_web_api(self):
         if not self.web_api:
             self.web_api = WebAPI(self)
-            self.web_api.start_server()
+
+            self.web_api.start_server(log_level=self.log_level)
             logger.info("🌐 Web interface available at http://localhost:8000")
 
         # Set web_api reference for all actions

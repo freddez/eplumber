@@ -240,9 +240,9 @@ class WebAPI:
             }
         )
 
-    def start_server(self, host="0.0.0.0", port=8000):
+    def start_server(self, host="0.0.0.0", port=8000, log_level="info"):
         def run_server():
-            uvicorn.run(self.app, host=host, port=port, log_level="info")
+            uvicorn.run(self.app, host=host, port=port, log_level=log_level)
 
         server_thread = threading.Thread(target=run_server, daemon=True)
         server_thread.start()
