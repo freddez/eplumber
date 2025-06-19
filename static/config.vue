@@ -371,6 +371,12 @@
                 </option>
               </select>
             </div>
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 10px">
+                <input type="checkbox" v-model="rule.active" style="margin: 0; width: auto; height: auto" />
+                Active
+              </label>
+            </div>
           </div>
 
           <div style="margin-top: 15px">
@@ -452,6 +458,13 @@
             try {
               const response = await axios.get('/api/config')
               this.config = response.data.config
+              if (this.config.rules) {
+                this.config.rules.forEach((rule) => {
+                  if (rule.active === undefined || rule.active === null) {
+                    rule.active = true
+                  }
+                })
+              }
               this.showStatus('Configuration loaded successfully', 'success')
             } catch (error) {
               this.showStatus(`Error loading config: ${error.response?.data?.error || error.message}`, 'error')
@@ -510,6 +523,7 @@
               name: '',
               tests: [['', '>', '']],
               action: '',
+              active: true,
             })
           },
 

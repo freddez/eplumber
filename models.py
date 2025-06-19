@@ -270,12 +270,14 @@ class Rule(BaseModel):
     name: str
     tests: list[Test]
     action: Action
+    active: bool = True
 
 
 class ConfigRule(BaseModel):
     name: str
     tests: list[Tuple[str, str, Union[float, str, int]]]
     action: str
+    active: bool = True
 
 
 class Mqtt(BaseModel):

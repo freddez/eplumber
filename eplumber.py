@@ -70,8 +70,10 @@ class Eplumber(BaseModel):
             for sensor_name, op, value in cfg_rule.tests:
                 test = models.Test(sensor=self.sensord[sensor_name], op=op, value=value)
                 tests.append(test)
+            # Set active to True if not specified or empty
+            active = cfg_rule.active if cfg_rule.active is not None else True
             rule = models.Rule(
-                name=cfg_rule.name, tests=tests, action=action_d[cfg_rule.action]
+                name=cfg_rule.name, tests=tests, action=action_d[cfg_rule.action], active=active
             )
             self.rules.append(rule)
 

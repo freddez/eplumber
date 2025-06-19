@@ -132,12 +132,13 @@ class WebAPI:
                         except Exception:
                             continue
                     all_tests_pass = bool(all(t["passes"] for t in rule_tests))
-                    if all_tests_pass:
+                    if all_tests_pass and rule.active:
                         rule.action.do(rule)
                     rule_dict = {
                         "action_name": f"{rule.name} ⇒ {rule.action.name}",
                         "tests": rule_tests,
                         "all_tests_pass": all_tests_pass,
+                        "active": rule.active,
                     }
                     response_data.append(rule_dict)
 
