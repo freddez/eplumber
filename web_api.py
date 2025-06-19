@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from datetime import datetime
 import models
 import threading
@@ -18,7 +18,7 @@ class WebAPI:
         self.app = FastAPI(title="Eplumber Monitor", version="1.0.0")
         self.action_history = deque(maxlen=100)
 
-        # Mount static files
+        # Mount static files with cache control
         self.app.mount("/static", StaticFiles(directory="static"), name="static")
 
         self._setup_routes()
@@ -205,11 +205,27 @@ class WebAPI:
 
         @self.app.get("/")
         async def get_dashboard():
-            return FileResponse("static/index.vue", media_type="text/html")
+            response = FileResponse("static/index.vue", media_type="text/html")
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+            return response
 
         @self.app.get("/config.html")
         async def get_config_editor():
-            return FileResponse("static/config.vue", media_type="text/html")
+            response = FileResponse("static/config.vue", media_type="text/html")
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+            return response
+
+        @self.app.get("/static/css/{filename}")
+        async def get_css(filename: str):
+            response = FileResponse(f"static/css/{filename}", media_type="text/css")
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+            return response
 
         @self.app.get("/favicon.ico")
         async def get_favicon():
