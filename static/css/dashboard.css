@@ -17,11 +17,32 @@ body {
 @media (min-width: 1200px) {
   body {
     padding: 20px;
-    font-size: 32px;
+    font-size: 16px;
   }
   .dashboard {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+  }
+  h1 {
+    font-size: 32px !important;
+  }
+  h2 {
+    font-size: 18px !important;
+  }
+  .refresh-btn {
+    font-size: 16px !important;
+    padding: 10px 20px !important;
+  }
+  .test {
+    font-size: 14px !important;
+    padding: 6px 12px !important;
+  }
+  .test-emoji {
+    font-size: 16px !important;
+  }
+  .action {
+    font-size: 14px !important;
+    padding: 8px 16px !important;
   }
 }
 

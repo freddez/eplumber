@@ -35,6 +35,41 @@
         border-radius: 8px;
         font-size: 28px;
       }
+      @media (min-width: 1200px) {
+        .form-control {
+          padding: 8px 12px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+        .form-group label {
+          font-size: 14px !important;
+          margin-bottom: 5px !important;
+        }
+        .btn-remove {
+          padding: 5px 10px !important;
+          font-size: 12px !important;
+          border-radius: 3px !important;
+        }
+        .btn-add {
+          padding: 8px 15px !important;
+          font-size: 14px !important;
+          border-radius: 4px !important;
+          margin-top: 10px !important;
+        }
+        .nav-buttons a {
+          padding: 10px 20px !important;
+          font-size: 14px !important;
+          border-radius: 4px !important;
+          margin-right: 10px !important;
+        }
+        .btn {
+          padding: 10px 20px !important;
+          font-size: 14px !important;
+          border-radius: 4px !important;
+          margin-right: 10px !important;
+        }
+      }
       .form-control:focus {
         outline: none;
         border-color: #4caf50;
