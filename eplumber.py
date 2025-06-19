@@ -84,10 +84,12 @@ class Eplumber(BaseModel):
             )
             self.rules.append(rule)
 
-        # Set web_api reference for all actions if web_api exists
-        if self.web_api:
-            for rule in self.rules:
+        # Set web_api reference and recipients for all actions
+        recipients = self.config.global_.recipients if self.config.global_ else []
+        for rule in self.rules:
+            if self.web_api:
                 rule.action.set_web_api(self.web_api)
+            rule.action.set_recipients(recipients)
 
         self.config.mqtt.set_client(self.sensord)
 

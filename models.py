@@ -2,6 +2,9 @@ import datetime
 import operator
 import requests
 import logging
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from pydantic import BaseModel, Field, field_validator, ConfigDict, PrivateAttr
 from typing import Callable, Literal
 from collections import deque
@@ -209,9 +212,30 @@ class Action(BaseModel):
     name: str
     route: str
     _web_api = None
+    _recipients = None
 
     def set_web_api(self, web_api):
         self._web_api = web_api
+
+    def set_recipients(self, recipients):
+        self._recipients = recipients
+
+    def _send_email_notification(self):
+        if not self._recipients:
+            return
+
+        try:
+            msg = MIMEMultipart()
+            msg["From"] = "eplumber@localhost"
+            msg["To"] = ", ".join(self._recipients)
+            msg["Subject"] = f"Eplumber Action: {self.name}"
+            body = f"Action '{self.name}' has been executed.\nRoute: {self.route}\nTime: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            msg.attach(MIMEText(body, "plain"))
+            server = smtplib.SMTP("localhost", 25)
+            server.sendmail("eplumber@localhost", self._recipients, msg.as_string())
+            server.quit()
+        except Exception as e:
+            logger.error(f"Failed to send email notification for action {self.name}: {e}")
 
     def do(self):
         logger.info(f"Do {self.name}")
@@ -219,6 +243,7 @@ class Action(BaseModel):
             response = requests.get(self.route)
             if self._web_api:
                 self._web_api.log_action(self.name, self.route)
+            self._send_email_notification()
             logger.debug(f"Action {self.name} executed: {response.status_code}")
         except Exception as e:
             logger.error(f"Action {self.name} failed: {e}")
@@ -259,7 +284,12 @@ class Mqtt(BaseModel):
         mqttc.loop_start()  # threaded client interface
 
 
+class Global(BaseModel):
+    recipients: list[str] = []
+
+
 class Config(BaseModel):
+    global_: Optional[Global] = Field(None, alias="global")
     mqtt: Mqtt
     sensors: list[dict]
     actions: list[Action]
