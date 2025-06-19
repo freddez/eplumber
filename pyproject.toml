@@ -1,7 +1,7 @@
 [project]
 name = "eplumber"
 version = "0.1.0"
-description = "Add your description here"
+description = "IoT automation system for smart home control using MQTT/HTTP sensors and rule-based actions"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -14,5 +14,4 @@ dependencies = [
     "ipdb>=0.13.13",
     "fastapi>=0.104.0",
     "uvicorn>=0.24.0",
-    "watchdog>=3.0.0",
 ]

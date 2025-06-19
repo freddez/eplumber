@@ -149,6 +149,63 @@ For debugging:
 make rundbg
 ```
 
+## Systemd Service Setup
+
+To run eplumber as a system service that automatically restarts on configuration changes:
+
+**1. Create the main service file `/etc/systemd/system/eplumber.service`:**
+```ini
+[Unit]
+Description=Eplumber IoT Automation System
+
+[Service]
+User=fredz
+ExecStart=/home/fredz/bin/uv --directory /home/fredz/src/eplumber run main.py --loglevel warning
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**2. Create the configuration watcher `/etc/systemd/system/eplumber-config.path`:**
+```ini
+[Unit]
+Description=Watch eplumber configuration file
+PathExists=/home/fredz/src/eplumber/eplumber.json
+
+[Path]
+PathChanged=/home/fredz/src/eplumber/eplumber.json
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**3. Create the restart service `/etc/systemd/system/eplumber-config.service`:**
+```ini
+[Unit]
+Description=Restart eplumber when config changes
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart eplumber.service
+```
+
+**4. Enable and start the services:**
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable eplumber.service
+sudo systemctl enable eplumber-config.path
+sudo systemctl start eplumber.service
+sudo systemctl start eplumber-config.path
+```
+
+**5. Check service status:**
+```bash
+sudo systemctl status eplumber.service
+sudo systemctl status eplumber-config.path
+```
+
+
 ## Example Use Cases
 
 ### Solar Water Heating

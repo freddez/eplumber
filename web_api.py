@@ -185,7 +185,7 @@ class WebAPI:
                     with open(self.eplumber._config_path, "w") as f:
                         json.dump(config_data, f, indent=2)
 
-                    # Config will be automatically reloaded by file watcher
+                    # Config will be automatically reloaded by systemd service restart
                     return JSONResponse(content={"message": "Config saved successfully"})
                 else:
                     return JSONResponse(
@@ -197,11 +197,8 @@ class WebAPI:
 
         @self.app.post("/api/config/reload")
         async def reload_config():
-            try:
-                self.eplumber.reload_config()
-                return JSONResponse(content={"message": "Config reloaded successfully"})
-            except Exception as e:
-                return JSONResponse(content={"error": str(e)}, status_code=500)
+            # Config reload is now handled by systemd service restart
+            return JSONResponse(content={"message": "Config reload handled by systemd - service will restart automatically"})
 
         @self.app.get("/")
         async def get_dashboard():

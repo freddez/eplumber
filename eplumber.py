@@ -7,23 +7,12 @@ from typing import Optional
 import models
 import threading
 from web_api import WebAPI
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
 logger = logging.getLogger(__name__)
 
 CFG_FILENAME = "eplumber.json"
 
 
-class ConfigFileHandler(FileSystemEventHandler):
-    def __init__(self, eplumber_instance):
-        self.eplumber = eplumber_instance
-        super().__init__()
-
-    def on_modified(self, event):
-        if not event.is_directory and event.src_path.endswith(CFG_FILENAME):
-            logger.info(f"Config file changed: {event.src_path}")
-            self.eplumber.reload_config()
 
 
 class Eplumber(BaseModel):
@@ -35,7 +24,6 @@ class Eplumber(BaseModel):
     http_sensors: list[models.HttpSensor] = []
     _http_timer: Optional[threading.Timer] = None
     web_api: Optional[WebAPI] = None
-    _file_observer: Optional[Observer] = None
     _config_path: Optional[Path] = None
     log_level: str = "info"
 
@@ -56,7 +44,6 @@ class Eplumber(BaseModel):
             return
 
         self._load_config_data(cfg_json)
-        self._start_file_watcher()
         self._start_http_polling()
         self._start_web_api()
 
@@ -97,31 +84,7 @@ class Eplumber(BaseModel):
 
         self.config.mqtt.set_client(self.sensord)
 
-    def reload_config(self):
-        """Reload configuration from file"""
-        if not self._config_path or not self._config_path.exists():
-            logger.error("Config file not found for reload")
-            return
 
-        try:
-            with open(self._config_path, "r") as cfg_file:
-                cfg_json = json.load(cfg_file)
-            self._load_config_data(cfg_json)
-            self._start_http_polling()
-            logger.info("Configuration reloaded successfully")
-        except Exception as e:
-            logger.error(f"Error reloading config: {e}")
-
-    def _start_file_watcher(self):
-        """Start watching the config file for changes"""
-        if self._config_path:
-            self._file_observer = Observer()
-            handler = ConfigFileHandler(self)
-            self._file_observer.schedule(
-                handler, str(self._config_path.parent), recursive=False
-            )
-            self._file_observer.start()
-            logger.info(f"Watching config file: {self._config_path}")
 
     def _poll_http_sensors(self):
         for sensor in self.http_sensors:
