@@ -133,7 +133,7 @@ class WebAPI:
                             continue
                     all_tests_pass = bool(all(t["passes"] for t in rule_tests))
                     if all_tests_pass:
-                        rule.action.do()
+                        rule.action.do(rule)
                     rule_dict = {
                         "action_name": f"{rule.name} ⇒ {rule.action.name}",
                         "tests": rule_tests,

@@ -220,7 +220,7 @@ class Action(BaseModel):
     def set_recipients(self, recipients):
         self._recipients = recipients
 
-    def _send_email_notification(self):
+    def _send_email_notification(self, rule_context=None):
         if not self._recipients:
             return
 
@@ -229,21 +229,34 @@ class Action(BaseModel):
             msg["From"] = "eplumber@localhost"
             msg["To"] = ", ".join(self._recipients)
             msg["Subject"] = f"Eplumber Action: {self.name}"
-            body = f"Action '{self.name}' has been executed.\nRoute: {self.route}\nTime: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            
+            body = f"Action '{self.name}' has been executed.\nRoute: {self.route}\nTime: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+            
+            if rule_context:
+                body += f"Rule: {rule_context.name}\n\nTest Results:\n"
+                for test in rule_context.tests:
+                    current_value = test.sensor.mean
+                    if isinstance(current_value, float):
+                        current_value = round(current_value, 2)
+                    passes = test.operator(current_value, test.value) if current_value is not None else False
+                    status = "✅ PASS" if passes else "❌ FAIL"
+                    body += f"  {status} {test.sensor.name}: {current_value} {test.op} {test.value}\n"
+            
             msg.attach(MIMEText(body, "plain"))
             server = smtplib.SMTP("localhost", 25)
             server.sendmail("eplumber@localhost", self._recipients, msg.as_string())
             server.quit()
+            logger.info(f"Email notification sent for action {self.name}")
         except Exception as e:
             logger.error(f"Failed to send email notification for action {self.name}: {e}")
 
-    def do(self):
+    def do(self, rule_context=None):
         logger.info(f"Do {self.name}")
         try:
             response = requests.get(self.route)
             if self._web_api:
                 self._web_api.log_action(self.name, self.route)
-            self._send_email_notification()
+            self._send_email_notification(rule_context)
             logger.debug(f"Action {self.name} executed: {response.status_code}")
         except Exception as e:
             logger.error(f"Action {self.name} failed: {e}")
