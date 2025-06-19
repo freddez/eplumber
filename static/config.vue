@@ -186,10 +186,7 @@
 
       <div
         v-if="statusMessage"
-        :class="[
-          'status-message',
-          statusType === 'success' ? 'status-success' : 'status-error',
-        ]"
+        :class="['status-message', statusType === 'success' ? 'status-success' : 'status-error']"
       >
         {{ statusMessage }}
       </div>
@@ -207,41 +204,21 @@
         <div class="form-row">
           <div class="form-group">
             <label>Host</label>
-            <input
-              v-model="config.mqtt.host"
-              class="form-control"
-              type="text"
-              placeholder="mqtt.example.com"
-            />
+            <input v-model="config.mqtt.host" class="form-control" type="text" placeholder="mqtt.example.com" />
           </div>
           <div class="form-group">
             <label>Port</label>
-            <input
-              v-model.number="config.mqtt.port"
-              class="form-control"
-              type="number"
-              placeholder="1883"
-            />
+            <input v-model.number="config.mqtt.port" class="form-control" type="number" placeholder="1883" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Username</label>
-            <input
-              v-model="config.mqtt.username"
-              class="form-control"
-              type="text"
-              placeholder="mqtt_user"
-            />
+            <input v-model="config.mqtt.username" class="form-control" type="text" placeholder="mqtt_user" />
           </div>
           <div class="form-group">
             <label>Password</label>
-            <input
-              v-model="config.mqtt.password"
-              class="form-control"
-              type="password"
-              placeholder="mqtt_password"
-            />
+            <input v-model="config.mqtt.password" class="form-control" type="password" placeholder="mqtt_password" />
           </div>
         </div>
       </div>
@@ -249,28 +226,15 @@
       <!-- Sensors -->
       <div class="form-section">
         <h2>📊 Sensors</h2>
-        <div
-          v-for="(sensor, index) in config.sensors"
-          :key="index"
-          class="list-item"
-        >
+        <div v-for="(sensor, index) in config.sensors" :key="index" class="list-item">
           <div class="list-item-header">
-            <span class="list-item-title"
-              >Sensor {{ index + 1 }}: {{ sensor.name || "Unnamed" }}</span
-            >
-            <button @click="removeSensor(index)" class="btn-remove">
-              Remove
-            </button>
+            <span class="list-item-title">Sensor {{ index + 1 }}: {{ sensor.name || 'Unnamed' }}</span>
+            <button @click="removeSensor(index)" class="btn-remove">Remove</button>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Name</label>
-              <input
-                v-model="sensor.name"
-                class="form-control"
-                type="text"
-                placeholder="sensor_name"
-              />
+              <input v-model="sensor.name" class="form-control" type="text" placeholder="sensor_name" />
             </div>
             <div class="form-group">
               <label>Type</label>
@@ -309,21 +273,11 @@
           </div>
           <div v-if="sensor.type === 'http'" class="form-group">
             <label>JSON Path (optional)</label>
-            <input
-              v-model="sensor.json_path"
-              class="form-control"
-              type="text"
-              placeholder="'switch:0'.output"
-            />
+            <input v-model="sensor.json_path" class="form-control" type="text" placeholder="'switch:0'.output" />
           </div>
           <div v-if="sensor.comment" class="form-group">
             <label>Comment</label>
-            <input
-              v-model="sensor.comment"
-              class="form-control"
-              type="text"
-              placeholder="Sensor description"
-            />
+            <input v-model="sensor.comment" class="form-control" type="text" placeholder="Sensor description" />
           </div>
         </div>
         <button @click="addSensor" class="btn-add">+ Add Sensor</button>
@@ -332,28 +286,15 @@
       <!-- Actions -->
       <div class="form-section">
         <h2>⚡ Actions</h2>
-        <div
-          v-for="(action, index) in config.actions"
-          :key="index"
-          class="list-item"
-        >
+        <div v-for="(action, index) in config.actions" :key="index" class="list-item">
           <div class="list-item-header">
-            <span class="list-item-title"
-              >Action {{ index + 1 }}: {{ action.name || "Unnamed" }}</span
-            >
-            <button @click="removeAction(index)" class="btn-remove">
-              Remove
-            </button>
+            <span class="list-item-title">Action {{ index + 1 }}: {{ action.name || 'Unnamed' }}</span>
+            <button @click="removeAction(index)" class="btn-remove">Remove</button>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Name</label>
-              <input
-                v-model="action.name"
-                class="form-control"
-                type="text"
-                placeholder="action_name"
-              />
+              <input v-model="action.name" class="form-control" type="text" placeholder="action_name" />
             </div>
             <div class="form-group">
               <label>HTTP Route</label>
@@ -372,38 +313,21 @@
       <!-- Rules -->
       <div class="form-section">
         <h2>📋 Rules</h2>
-        <div
-          v-for="(rule, ruleIndex) in config.rules"
-          :key="ruleIndex"
-          class="list-item"
-        >
+        <div v-for="(rule, ruleIndex) in config.rules" :key="ruleIndex" class="list-item">
           <div class="list-item-header">
-            <span class="list-item-title"
-              >Rule {{ ruleIndex + 1 }}: {{ rule.name || "Unnamed" }}</span
-            >
-            <button @click="removeRule(ruleIndex)" class="btn-remove">
-              Remove
-            </button>
+            <span class="list-item-title">Rule {{ ruleIndex + 1 }}: {{ rule.name || 'Unnamed' }}</span>
+            <button @click="removeRule(ruleIndex)" class="btn-remove">Remove</button>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Rule Name</label>
-              <input
-                v-model="rule.name"
-                class="form-control"
-                type="text"
-                placeholder="rule_name"
-              />
+              <input v-model="rule.name" class="form-control" type="text" placeholder="rule_name" />
             </div>
             <div class="form-group">
               <label>Action</label>
               <select v-model="rule.action" class="form-control">
                 <option value="">Select Action</option>
-                <option
-                  v-for="action in config.actions"
-                  :key="action.name"
-                  :value="action.name"
-                >
+                <option v-for="action in config.actions" :key="action.name" :value="action.name">
                   {{ action.name }}
                 </option>
               </select>
@@ -411,33 +335,23 @@
           </div>
 
           <div style="margin-top: 15px">
-            <label style="font-weight: bold"
-              >Tests (All must pass for rule to trigger)</label
-            >
-            <div
-              v-for="(test, testIndex) in rule.tests"
-              :key="testIndex"
-              class="test-item"
-            >
+            <label style="font-weight: bold">Tests (All must pass for rule to trigger)</label>
+            <div v-for="(test, testIndex) in rule.tests" :key="testIndex" class="test-item">
               <div class="test-row">
                 <select v-model="test[0]" class="form-control">
                   <option value="">Select Sensor</option>
-                  <option
-                    v-for="sensor in config.sensors"
-                    :key="sensor.name"
-                    :value="sensor.name"
-                  >
+                  <option v-for="sensor in config.sensors" :key="sensor.name" :value="sensor.name">
                     {{ sensor.name }}
                   </option>
                   <option value="time">time</option>
                 </select>
                 <select v-model="test[1]" class="form-control">
-                  <option value="<">< (less than)</option>
-                  <option value="<="><= (less or equal)</option>
-                  <option value=">">> (greater than)</option>
-                  <option value=">=">>= (greater or equal)</option>
-                  <option value="==">= == (equals)</option>
-                  <option value="!=">!= (not equals)</option>
+                  <option value="<"><</option>
+                  <option value="<="><=</option>
+                  <option value=">">></option>
+                  <option value=">=">>=</option>
+                  <option value="==">=</option>
+                  <option value="!=">!=</option>
                 </select>
                 <input
                   v-model="test[2]"
@@ -445,12 +359,7 @@
                   type="text"
                   placeholder="Value (number, string, or boolean)"
                 />
-                <button
-                  @click="removeTest(ruleIndex, testIndex)"
-                  class="btn-remove-small"
-                >
-                  ×
-                </button>
+                <button @click="removeTest(ruleIndex, testIndex)" class="btn-remove-small">×</button>
               </div>
             </div>
             <button
@@ -467,149 +376,134 @@
 
       <div class="form-section">
         <button @click="saveConfig" :disabled="loading" class="btn btn-primary">
-          {{ loading ? "Saving..." : "Save & Apply Configuration" }}
+          {{ loading ? 'Saving...' : 'Save & Apply Configuration' }}
         </button>
-        <button
-          @click="loadConfig"
-          :disabled="loading"
-          class="btn btn-secondary"
-        >
-          {{ loading ? "Loading..." : "Reload from File" }}
+        <button @click="loadConfig" :disabled="loading" class="btn btn-secondary">
+          {{ loading ? 'Loading...' : 'Reload from File' }}
         </button>
       </div>
     </div>
 
     <script>
-      const { createApp } = Vue;
+      const { createApp } = Vue
       createApp({
         data() {
           return {
             config: {
               mqtt: {
-                host: "",
+                host: '',
                 port: 1883,
-                username: "",
-                password: "",
+                username: '',
+                password: '',
               },
               sensors: [],
               actions: [],
               rules: [],
             },
             loading: false,
-            statusMessage: "",
-            statusType: "success",
+            statusMessage: '',
+            statusType: 'success',
             validationErrors: [],
-          };
+          }
         },
         methods: {
           async loadConfig() {
-            this.loading = true;
-            this.clearStatus();
+            this.loading = true
+            this.clearStatus()
             try {
-              const response = await axios.get("/api/config");
-              this.config = response.data.config;
-              this.showStatus("Configuration loaded successfully", "success");
+              const response = await axios.get('/api/config')
+              this.config = response.data.config
+              this.showStatus('Configuration loaded successfully', 'success')
             } catch (error) {
-              this.showStatus(
-                `Error loading config: ${
-                  error.response?.data?.error || error.message
-                }`,
-                "error",
-              );
+              this.showStatus(`Error loading config: ${error.response?.data?.error || error.message}`, 'error')
             } finally {
-              this.loading = false;
+              this.loading = false
             }
           },
 
           async saveConfig() {
-            this.loading = true;
-            this.clearStatus();
-            this.validationErrors = [];
+            this.loading = true
+            this.clearStatus()
+            this.validationErrors = []
 
             try {
-              const response = await axios.put("/api/config", {
+              const response = await axios.put('/api/config', {
                 config: this.config,
-              });
-              this.showStatus(
-                "Configuration saved and applied successfully!",
-                "success",
-              );
+              })
+              this.showStatus('Configuration saved and applied successfully!', 'success')
             } catch (error) {
               if (error.response?.data?.error) {
-                this.showStatus(`Error: ${error.response.data.error}`, "error");
+                this.showStatus(`Error: ${error.response.data.error}`, 'error')
               } else {
-                this.showStatus(
-                  `Error saving config: ${error.message}`,
-                  "error",
-                );
+                this.showStatus(`Error saving config: ${error.message}`, 'error')
               }
             } finally {
-              this.loading = false;
+              this.loading = false
             }
           },
 
           addSensor() {
             this.config.sensors.push({
-              name: "",
-              route: "",
-              type: "mqtt",
-              return_type: "float",
-            });
+              name: '',
+              route: '',
+              type: 'mqtt',
+              return_type: 'float',
+            })
           },
 
           removeSensor(index) {
-            this.config.sensors.splice(index, 1);
+            this.config.sensors.splice(index, 1)
           },
 
           addAction() {
             this.config.actions.push({
-              name: "",
-              route: "",
-            });
+              name: '',
+              route: '',
+            })
           },
 
           removeAction(index) {
-            this.config.actions.splice(index, 1);
+            this.config.actions.splice(index, 1)
           },
 
           addRule() {
             this.config.rules.push({
-              name: "",
-              tests: [["", ">", ""]],
-              action: "",
-            });
+              name: '',
+              tests: [['', '>', '']],
+              action: '',
+            })
           },
 
           removeRule(index) {
-            this.config.rules.splice(index, 1);
+            this.config.rules.splice(index, 1)
           },
 
           addTest(ruleIndex) {
-            this.config.rules[ruleIndex].tests.push(["", ">", ""]);
+            this.config.rules[ruleIndex].tests.push(['', '>', ''])
           },
 
           removeTest(ruleIndex, testIndex) {
-            this.config.rules[ruleIndex].tests.splice(testIndex, 1);
+            this.config.rules[ruleIndex].tests.splice(testIndex, 1)
           },
 
           showStatus(message, type) {
-            this.statusMessage = message;
-            this.statusType = type;
+            this.statusMessage = message
+            this.statusType = type
             setTimeout(() => {
-              this.clearStatus();
-            }, 5000);
+              this.clearStatus()
+            }, 5000)
           },
 
           clearStatus() {
-            this.statusMessage = "";
-            this.validationErrors = [];
+            this.statusMessage = ''
+            this.validationErrors = []
           },
         },
 
         mounted() {
-          this.loadConfig();
+          this.loadConfig()
         },
-      }).mount("#app");
+      }).mount('#app')
     </script>
   </body>
 </html>
