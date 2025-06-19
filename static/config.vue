@@ -23,16 +23,17 @@
       }
       .form-group label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         font-weight: bold;
         color: #333;
+        font-size: 24px;
       }
       .form-control {
         width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
+        padding: 16px 24px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 28px;
       }
       .form-control:focus {
         outline: none;
@@ -68,10 +69,10 @@
         background: #dc3545;
         color: white;
         border: none;
-        padding: 5px 10px;
-        border-radius: 3px;
+        padding: 12px 20px;
+        border-radius: 6px;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 24px;
       }
       .btn-remove:hover {
         background: #c82333;
@@ -80,10 +81,11 @@
         background: #28a745;
         color: white;
         border: none;
-        padding: 8px 15px;
-        border-radius: 4px;
+        padding: 16px 30px;
+        border-radius: 8px;
         cursor: pointer;
-        margin-top: 10px;
+        margin-top: 20px;
+        font-size: 24px;
       }
       .btn-add:hover {
         background: #218838;
@@ -93,22 +95,24 @@
       }
       .nav-buttons a {
         display: inline-block;
-        padding: 10px 20px;
+        padding: 20px 40px;
         background: #2196f3;
         color: white;
         text-decoration: none;
-        border-radius: 4px;
-        margin-right: 10px;
+        border-radius: 8px;
+        margin-right: 20px;
+        font-size: 24px;
       }
       .nav-buttons a:hover {
         background: #1976d2;
       }
       .btn {
-        padding: 10px 20px;
+        padding: 20px 40px;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
-        margin-right: 10px;
+        margin-right: 20px;
+        font-size: 24px;
       }
       .btn-primary {
         background: #4caf50;

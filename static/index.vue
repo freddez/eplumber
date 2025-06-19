@@ -10,11 +10,10 @@
   <body>
     <div id="app">
       <h1>🔧 Eplumber Monitor</h1>
-      <div style="margin-bottom: 20px">
+      
+      <div class="controls">
         <button @click="fetchData" class="refresh-btn">🔄 Refresh</button>
-        <a href="config.html" class="refresh-btn" style="text-decoration: none; display: inline-block"
-          >⚙️ Edit Config</a
-        >
+        <a href="config.html" class="refresh-btn config-btn">⚙️ Config</a>
       </div>
 
       <div class="dashboard">
@@ -25,32 +24,32 @@
             :key="sensor.name"
             :class="['sensor', sensor.connected ? 'connected' : 'disconnected']"
           >
-            <strong>{{ sensor.name }}</strong> ({{ sensor.type }}) :
-            <strong>{{ sensor.mean !== null && sensor.mean !== undefined ? sensor.mean : 'N/A' }}</strong>
+            <span class="sensor-name">{{ sensor.name }}</span>
+            <span class="sensor-value">{{ sensor.mean !== null && sensor.mean !== undefined ? sensor.mean : 'N/A' }}</span>
           </div>
         </div>
 
         <div class="panel">
-          <h2>⚡ Rules Status</h2>
+          <h2>⚡ Rules</h2>
           <div v-for="(rule, index) in rules" :key="index" :class="['rule', rule.all_tests_pass ? 'active' : '']">
-            <strong>{{ rule.action_name }}</strong>
+            <div class="rule-name">{{ rule.action_name.split(' ⇒ ')[0] }}</div>
             <div
               v-for="test in rule.tests"
               :key="test.sensor_name"
               :class="['test', test.passes ? 'passing' : 'failing']"
             >
-              {{ test.sensor_name }} : {{ test.current_sensor_value }} {{ test.operator }} {{ test.value }}
-              {{ test.passes ? '✅' : '❌' }}
+              <span>{{ test.sensor_name }}: {{ test.current_sensor_value }} {{ test.operator }} {{ test.value }}</span>
+              <span class="test-emoji">{{ test.passes ? '✅' : '❌' }}</span>
             </div>
           </div>
         </div>
 
         <div class="panel">
-          <h2>📝 Action History</h2>
-          <div v-for="action in actionHistory" :key="action.timestamp" class="action">
-            <strong>{{ action.timestamp }}</strong> - {{ action.name }} <br /><small>{{ action.route }}</small>
+          <h2>📝 Actions</h2>
+          <div v-for="action in actionHistory.slice(0, 10)" :key="action.timestamp" class="action">
+            <strong>{{ action.timestamp.split(' ')[1] }}</strong> {{ action.name }}
           </div>
-          <div v-if="actionHistory.length === 0">No actions executed yet</div>
+          <div v-if="actionHistory.length === 0" style="color: #6c757d; font-style: italic;">No actions yet</div>
         </div>
       </div>
     </div>
