@@ -6,5 +6,7 @@ dist/
 wheels/
 *.egg-info
 
-# Virtual environments
+uv.lock
 .venv
+
+eplumber*.json
