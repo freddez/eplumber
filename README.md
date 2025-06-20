@@ -120,9 +120,12 @@ Create an `eplumber.json` configuration file in the project directory or user co
 
 - **global**: Email recipients for notifications
 - **mqtt**: MQTT broker connection settings
-- **sensors**: Define data sources (MQTT topics, HTTP endpoints). With json payload, single value are extracted with **json_path** parameter, expressed in [jq](https://jqlang.org/) syntax.
+- **sensors**: Define data sources (MQTT topics, HTTP endpoints). 
+  - With json payload, single value are extracted with **json_path** parameter, expressed in [jq](https://jqlang.org/) syntax.
+  - Current sensor value is computed with mean of the last **value_list_length** values (default to 5). Changing this value will affect the reactivity of actions related to that sensor.
 - **actions**: HTTP commands to control devices
 - **rules**: Automation logic with test conditions and actions
+  - Each rule could be desactivated with the **active** flag
 
 ### Sensor Types
 

@@ -310,6 +310,17 @@
               </select>
             </div>
           </div>
+          <div class="form-group">
+            <label>Value List Length</label>
+            <input
+              v-model.number="sensor.value_list_length"
+              class="form-control"
+              type="number"
+              min="1"
+              max="100"
+              placeholder="5"
+            />
+          </div>
           <div v-if="sensor.type === 'http'" class="form-group">
             <label>JSON Path (optional)</label>
             <input v-model="sensor.json_path" class="form-control" type="text" placeholder="'switch:0'.output" />
@@ -500,6 +511,7 @@
               route: '',
               type: 'mqtt',
               return_type: 'float',
+              value_list_length: 5,
             })
           },
 

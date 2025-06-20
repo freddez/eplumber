@@ -39,7 +39,12 @@ class Sensor(BaseModel):
     return_type: Literal["float", "int", "str", "bool"] = "float"
     connected: bool = False
     ready: bool = False
-    values: Annotated[Deque[float | int | bool], Field(deque(maxlen=10), max_length=10)]
+    value_list_length: int = 5
+    values: Optional[Deque[float | int | bool]] = None
+
+    def model_post_init(self, __context) -> None:
+        if self.values is None:
+            self.values = deque(maxlen=self.value_list_length)
 
     def __str__(self):
         return str(self.name)
