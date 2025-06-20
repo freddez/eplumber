@@ -12,7 +12,6 @@
       <h1>🔧 Eplumber Monitor</h1>
       
       <div class="controls">
-        <button @click="fetchData" class="refresh-btn">🔄 Refresh</button>
         <a href="config.html" class="refresh-btn config-btn">⚙️ Config</a>
       </div>
 
