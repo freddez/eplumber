@@ -14,8 +14,8 @@ A Python-based IoT automation system that monitors sensors via MQTT and HTTP, ev
 ## Hardware Compatibility
 
 This project is used with:
-- **EmonPi** energy monitoring system with MQTT broker for solar monitoring (from [Open Energy Monitor](https://openenergymonitor.org/)) running on Raspberry Pi
-- **OpenEVSE** charging station for electric vehicle monitoring
+- **[EmonPi](https://openenergymonitor.org/)** energy monitoring system with MQTT broker for solar monitoring running on Raspberry Pi
+- **[OpenEVSE](https://www.openevse.com/)** charging station for electric vehicle monitoring
 - **[Shelly](https://www.shelly.com/) switches** and temperature sensors for water heater control 
 - **Shelly plugs** for battery charger management
 
