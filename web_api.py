@@ -91,59 +91,8 @@ class WebAPI:
         @self.app.get("/api/rules")
         async def get_rules():
             try:
-                response_data = []
-
-                for rule in self.eplumber.rules:
-                    rule_tests = []
-                    for test in rule.tests:
-                        try:
-                            sensor_name = str(test.sensor.name)
-                            operator_str = str(test.op)
-                            test_value = test.value
-                            current_value = test.sensor.mean
-
-                            if current_value is not None and test.operator:
-                                passes = bool(test.operator(current_value, test_value))
-                            else:
-                                passes = False
-
-                            if isinstance(test_value, (int, float, str, bool)):
-                                safe_test_value = test_value
-                            else:
-                                safe_test_value = str(test_value)
-
-                            if (
-                                isinstance(current_value, (int, float, str, bool))
-                                or current_value is None
-                            ):
-                                safe_current_value = round(current_value, 2) if isinstance(current_value, float) else current_value
-                            else:
-                                safe_current_value = str(current_value)
-
-                            test_dict = {
-                                "sensor_name": sensor_name,
-                                "operator": operator_str,
-                                "value": safe_test_value,
-                                "current_sensor_value": safe_current_value,
-                                "passes": passes,
-                            }
-                            rule_tests.append(test_dict)
-
-                        except Exception:
-                            continue
-                    all_tests_pass = bool(all(t["passes"] for t in rule_tests))
-                    if all_tests_pass and rule.active:
-                        rule.action.do(rule)
-                    rule_dict = {
-                        "action_name": f"{rule.name} ⇒ {rule.action.name}",
-                        "tests": rule_tests,
-                        "all_tests_pass": all_tests_pass,
-                        "active": rule.active,
-                    }
-                    response_data.append(rule_dict)
-
-                return JSONResponse(content={"rules": response_data})
-
+                # Return cached rule evaluation results from the dedicated thread
+                return JSONResponse(content={"rules": self.eplumber._cached_rules_data})
             except Exception:
                 return JSONResponse(content={"rules": []})
 

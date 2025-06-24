@@ -22,6 +22,8 @@ class Eplumber(BaseModel):
     rules: list[models.Rule] = []
     http_sensors: list[models.HttpSensor] = []
     _http_timer: Optional[threading.Timer] = None
+    _rules_timer: Optional[threading.Timer] = None
+    _cached_rules_data: list = []
     web_api: Optional[WebAPI] = None
     _config_path: Optional[Path] = None
     log_level: str = "info"
@@ -44,6 +46,7 @@ class Eplumber(BaseModel):
 
         self._load_config_data(cfg_json)
         self._start_http_polling()
+        self._start_rule_polling()
         self._start_web_api()
 
     def _load_config_data(self, cfg_json):
@@ -53,9 +56,11 @@ class Eplumber(BaseModel):
         self.rules = []
         self.http_sensors = []
 
-        # Stop existing HTTP timer
+        # Stop existing timers
         if self._http_timer:
             self._http_timer.cancel()
+        if self._rules_timer:
+            self._rules_timer.cancel()
 
         self.config = models.Config(**cfg_json)
         for s in self.config.sensors:
@@ -98,13 +103,76 @@ class Eplumber(BaseModel):
                 sensor.get_add_value()
             except Exception as e:
                 logger.error(f"Error polling HTTP sensor {sensor.name}: {e}")
-
         self._http_timer = threading.Timer(10.0, self._poll_http_sensors)
         self._http_timer.start()
 
     def _start_http_polling(self):
         if self.http_sensors:
             self._poll_http_sensors()
+
+    def _pool_rules(self):
+        """Evaluate all rules and trigger actions in a dedicated thread"""
+        try:
+            result = []
+            for rule in self.rules:
+                rule_tests = []
+                for test in rule.tests:
+                    try:
+                        sensor_name = str(test.sensor.name)
+                        operator_str = str(test.op)
+                        test_value = test.value
+                        current_value = test.sensor.mean
+                        if current_value is not None and test.operator:
+                            passes = bool(test.operator(current_value, test_value))
+                        else:
+                            passes = False
+                        if isinstance(test_value, (int, float, str, bool)):
+                            safe_test_value = test_value
+                        else:
+                            safe_test_value = str(test_value)
+                        if (
+                            isinstance(current_value, (int, float, str, bool))
+                            or current_value is None
+                        ):
+                            safe_current_value = (
+                                round(current_value, 2)
+                                if isinstance(current_value, float)
+                                else current_value
+                            )
+                        else:
+                            safe_current_value = str(current_value)
+                        test_result = {
+                            "sensor_name": sensor_name,
+                            "operator": operator_str,
+                            "value": safe_test_value,
+                            "current_sensor_value": safe_current_value,
+                            "passes": passes,
+                        }
+                        rule_tests.append(test_result)
+                    except Exception as e:
+                        logger.error(f"Error evaluating test for rule {rule.name}: {e}")
+                        continue
+                all_tests_pass = bool(all(t["passes"] for t in rule_tests))
+                if all_tests_pass and rule.active:
+                    rule.action.do(rule)
+                rule_result = {
+                    "action_name": f"{rule.name} ⇒ {rule.action.name}",
+                    "tests": rule_tests,
+                    "all_tests_pass": all_tests_pass,
+                    "active": rule.active,
+                }
+                result.append(rule_result)
+            # Cache the results for web API
+            self._cached_rules_data = result
+        except Exception as e:
+            logger.error(f"Error in rule evaluation: {e}")
+        # Schedule next evaluation
+        self._rules_timer = threading.Timer(5.0, self._pool_rules)
+        self._rules_timer.start()
+
+    def _start_rule_polling(self):
+        if self.rules:
+            self._pool_rules()
 
     def _start_web_api(self):
         if not self.web_api:

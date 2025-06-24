@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, field_validator, ConfigDict, PrivateAttr
 from typing import Callable, Literal
 from collections import deque
 import statistics
-from typing import Annotated, Deque, Union, Optional, Tuple
+from typing import Deque, Union, Optional, Tuple
 import paho.mqtt.client as mqtt_client
 import mqtt
 import json
