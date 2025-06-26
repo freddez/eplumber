@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse, Response
-from datetime import datetime
-import models
-import threading
-import uvicorn
-from collections import deque
 import json
 import logging
+import threading
+from collections import deque
+from datetime import datetime
+import uvicorn
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+import models
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +43,19 @@ class WebAPI:
                         "return_type": sensor.return_type,
                         "connected": sensor.connected,
                         "ready": sensor.ready,
-                        "mean": round(sensor.mean, 2) if isinstance(sensor.mean, float) else sensor.mean,
-                        "last": round(sensor.last, 2) if isinstance(sensor.last, float) else sensor.last,
-                        "values": [round(v, 2) if isinstance(v, float) else v for v in values],
+                        "mean": (
+                            round(sensor.mean, 2)
+                            if isinstance(sensor.mean, float)
+                            else sensor.mean
+                        ),
+                        "last": (
+                            round(sensor.last, 2)
+                            if isinstance(sensor.last, float)
+                            else sensor.last
+                        ),
+                        "values": [
+                            round(v, 2) if isinstance(v, float) else v for v in values
+                        ],
                         "value_count": len(values),
                     }
                     sensors_data.append(sensor_data)
@@ -100,7 +110,7 @@ class WebAPI:
         async def get_config():
             try:
                 if self.eplumber._config_path and self.eplumber._config_path.exists():
-                    with open(self.eplumber._config_path, "r") as f:
+                    with open(self.eplumber._config_path) as f:
                         config_data = json.load(f)
                     return JSONResponse(content={"config": config_data})
                 else:
@@ -144,11 +154,6 @@ class WebAPI:
 
             except Exception as e:
                 return JSONResponse(content={"error": str(e)}, status_code=500)
-
-        @self.app.post("/api/config/reload")
-        async def reload_config():
-            # Config reload is now handled by systemd service restart
-            return JSONResponse(content={"message": "Config reload handled by systemd - service will restart automatically"})
 
         @self.app.get("/")
         async def get_dashboard():

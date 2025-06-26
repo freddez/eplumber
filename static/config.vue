@@ -432,10 +432,7 @@
 
       <div class="form-section">
         <button @click="saveConfig" :disabled="loading" class="btn btn-primary">
-          {{ loading ? 'Saving...' : 'Save & Apply Configuration' }}
-        </button>
-        <button @click="loadConfig" :disabled="loading" class="btn btn-secondary">
-          {{ loading ? 'Loading...' : 'Reload from File' }}
+          {{ loading ? 'Saving...' : 'Save & Restart' }}
         </button>
       </div>
     </div>

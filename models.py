@@ -40,7 +40,7 @@ class Sensor(BaseModel):
     connected: bool = False
     ready: bool = False
     value_list_length: int = 5
-    values: Optional[Deque[float | int | bool]] = None
+    values: Optional[Deque[float | int | bool | str]] = None
 
     def model_post_init(self, __context) -> None:
         if self.values is None:
@@ -102,7 +102,8 @@ class Sensor(BaseModel):
             return None
         logging.debug(f"{self.name}.add({parsed_value}) mean:{self.mean}")
         self.connected = True
-        self.values.append(parsed_value)
+        if self.values is not None:
+            self.values.append(parsed_value)
         return parsed_value
 
 
