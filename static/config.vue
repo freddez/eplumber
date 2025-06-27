@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="/static/css/dashboard.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
     <style>
       .config-editor {
         max-width: 1200px;
