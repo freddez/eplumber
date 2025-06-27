@@ -183,6 +183,10 @@ class WebAPI:
         async def get_favicon():
             return FileResponse("static/favicon.svg", media_type="image/svg+xml")
 
+        @self.app.get("/logo.svg")
+        async def get_favicon():
+            return FileResponse("static/logo.svg", media_type="image/svg+xml")
+
     def log_action(self, action_name: str, route: str):
         self.action_history.append(
             {

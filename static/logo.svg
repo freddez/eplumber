@@ -1,0 +1,33 @@
+<svg width="220" height="50" viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;display=swap');
+    .sun {
+      fill: #FFD700; /* Gold */
+      stroke: #FFA500; /* Orange */
+      stroke-width: 1.5;
+      stroke-linecap: round;
+    }
+    .text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      dominant-baseline: middle;
+    }
+  </style>
+  <g id="sun-symbol" transform="translate(25, 25)">
+    <circle cx="0" cy="0" r="12" fill="#FFD700"/>
+    <g class="sun">
+      <line x1="0" y1="-18" x2="0" y2="-14" />
+      <line x1="0" y1="18" x2="0" y2="14" />
+      <line x1="-18" y1="0" x2="-14" y2="0" />
+      <line x1="18" y1="0" x2="14" y2="0" />
+      <line x1="-12.7" y1="-12.7" x2="-10" y2="-10" />
+      <line x1="12.7" y1="-12.7" x2="10" y2="-10" />
+      <line x1="-12.7" y1="12.7" x2="-10" y2="10" />
+      <line x1="12.7" y1="12.7" x2="10" y2="10" />
+    </g>
+  </g>
+  <text x="60" y="25" class="text">
+    <tspan fill="#FFD700">E</tspan><tspan fill="#007BFF">Plumber</tspan>
+  </text>
+</svg>

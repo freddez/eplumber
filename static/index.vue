@@ -9,10 +9,14 @@
   </head>
   <body>
     <div id="app">
-      <h1>🔧 Eplumber Monitor</h1>
-      
-      <div class="controls">
-        <a href="config.html" class="refresh-btn config-btn">⚙️ Config</a>
+      <div class="header-container">
+        <div class="logo-container">
+          <img src="/logo.svg" alt="Eplumber Logo" class="logo" />
+        </div>
+        
+        <div class="controls">
+          <a href="config.html" class="refresh-btn config-btn">⚙️ Config</a>
+        </div>
       </div>
 
       <div class="dashboard">

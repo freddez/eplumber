@@ -6,6 +6,23 @@ body {
   font-size: 28px;
 }
 
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.logo-container {
+  /* text-align: center; */ /* Removed as flexbox handles alignment */
+  /* margin-bottom: 16px; */ /* Removed as flexbox handles spacing */
+}
+
+.logo {
+  height: 50px;
+  vertical-align: middle;
+}
+
 .dashboard {
   display: grid;
   grid-template-columns: 1fr;
@@ -207,7 +224,7 @@ h2 {
   gap: 8px;
   margin-bottom: 16px;
   flex-wrap: wrap;
-  justify-content: center;
+  /* justify-content: center; */ /* Removed as flexbox handles alignment */
 }
 
 @media (min-width: 768px) {
