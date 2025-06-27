@@ -13,11 +13,6 @@ body {
   margin-bottom: 16px;
 }
 
-.logo-container {
-  /* text-align: center; */ /* Removed as flexbox handles alignment */
-  /* margin-bottom: 16px; */ /* Removed as flexbox handles spacing */
-}
-
 .logo {
   height: 50px;
   vertical-align: middle;
