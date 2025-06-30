@@ -44,10 +44,35 @@ class Eplumber(BaseModel):
             logger.error(f"{CFG_FILENAME} not found")
             return
 
+        cfg_json = self._convert_numeric_strings(cfg_json)
         self._load_config_data(cfg_json)
         self._start_http_polling()
         self._start_rule_polling()
         self._start_web_api()
+
+    def _convert_numeric_strings(self, obj):
+        if isinstance(obj, dict):
+            return {k: self._convert_numeric_strings(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [self._convert_numeric_strings(item) for item in obj]
+        elif isinstance(obj, str):
+            try:
+                return int(obj)
+            except ValueError:
+                try:
+                    return float(obj)
+                except ValueError:
+                    return obj
+        else:
+            return obj
+
+    def _try_convert_string_to_number(self, s):
+        try:
+            if s.isdigit() or (s.startswith("-") and s[1:].isdigit()):
+                return int(s)
+            return float(s)
+        except ValueError:
+            return s
 
     def _load_config_data(self, cfg_json):
         """Load configuration data and set up sensors/rules"""
