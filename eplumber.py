@@ -2,6 +2,7 @@ import json
 import logging
 import threading
 from pathlib import Path
+from time import sleep
 
 import appdirs
 from pydantic import BaseModel, ConfigDict
@@ -23,7 +24,7 @@ class Eplumber(BaseModel):
     rules: list[models.Rule] = []
     http_sensors: list[models.HttpSensor] = []
     _http_timer: threading.Timer | None = None
-    _rules_timer: threading.Timer | None = None
+    _rules_thread: threading.Thread | None = None
     _cached_rules_data: list = []
     web_api: WebAPI | None = None
     _config_path: Path | None = None
@@ -85,8 +86,8 @@ class Eplumber(BaseModel):
         # Stop existing timers
         if self._http_timer:
             self._http_timer.cancel()
-        if self._rules_timer:
-            self._rules_timer.cancel()
+        if self._rules_thread:
+            self._rules_thread.cancel()
 
         self.config = models.Config(**cfg_json)
         for s in self.config.sensors:
@@ -136,9 +137,8 @@ class Eplumber(BaseModel):
         if self.http_sensors:
             self._poll_http_sensors()
 
-    def _pool_rules(self):
-        """Evaluate all rules and trigger actions in a dedicated thread"""
-        try:
+    def _check_rules_loop(self):
+        while True:
             result = []
             for rule in self.rules:
                 rule_tests = []
@@ -190,15 +190,14 @@ class Eplumber(BaseModel):
                 result.append(rule_result)
             # Cache the results for web API
             self._cached_rules_data = result
-        except Exception as e:
-            logger.error(f"Error in rule evaluation: {e}")
-        # Schedule next evaluation
-        self._rules_timer = threading.Timer(5.0, self._pool_rules)
-        self._rules_timer.start()
+            sleep(1)
 
     def _start_rule_polling(self):
         if self.rules:
-            self._pool_rules()
+            self._rules_thread = threading.Thread(
+                target=self._check_rules_loop, daemon=True
+            )
+            self._rules_thread.start()
 
     def _start_web_api(self):
         if not self.web_api:
