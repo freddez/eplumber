@@ -1,12 +1,13 @@
-from pydantic import BaseModel, ConfigDict
-from pathlib import Path
-import appdirs
 import json
 import logging
-from typing import Optional
+import threading
+from pathlib import Path
+
+import appdirs
+from pydantic import BaseModel, ConfigDict
+
 import models
 from notification import send_startup_notification
-import threading
 from web_api import WebAPI
 
 logger = logging.getLogger(__name__)
@@ -18,14 +19,14 @@ class Eplumber(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     sensord: models.SensorD = models.SensorD()
-    config: Optional[models.Config] = None
+    config: models.Config | None = None
     rules: list[models.Rule] = []
     http_sensors: list[models.HttpSensor] = []
-    _http_timer: Optional[threading.Timer] = None
-    _rules_timer: Optional[threading.Timer] = None
+    _http_timer: threading.Timer | None = None
+    _rules_timer: threading.Timer | None = None
     _cached_rules_data: list = []
-    web_api: Optional[WebAPI] = None
-    _config_path: Optional[Path] = None
+    web_api: WebAPI | None = None
+    _config_path: Path | None = None
     log_level: str = "info"
 
     def __init__(self, log_level="info", **data):
@@ -37,7 +38,7 @@ class Eplumber(BaseModel):
             cfg_path = Path(path) / CFG_FILENAME
             if cfg_path.exists():
                 self._config_path = cfg_path
-                cfg_file = open(cfg_path, "r")
+                cfg_file = open(cfg_path)
                 cfg_json = json.load(cfg_file)
                 break
         if cfg_json is None:
@@ -151,12 +152,12 @@ class Eplumber(BaseModel):
                             passes = bool(test.operator(current_value, test_value))
                         else:
                             passes = False
-                        if isinstance(test_value, (int, float, str, bool)):
+                        if isinstance(test_value, int | float | str | bool):
                             safe_test_value = test_value
                         else:
                             safe_test_value = str(test_value)
                         if (
-                            isinstance(current_value, (int, float, str, bool))
+                            isinstance(current_value, int | float | str | bool)
                             or current_value is None
                         ):
                             safe_current_value = (

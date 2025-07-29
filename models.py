@@ -1,16 +1,18 @@
 import datetime
-import operator
-import requests
-import logging
-from pydantic import BaseModel, Field, field_validator, ConfigDict, PrivateAttr
-from typing import Callable, Literal
-from collections import deque
-import statistics
-from typing import Deque, Union, Optional, Tuple
-import paho.mqtt.client as mqtt_client
-import mqtt
 import json
+import logging
+import operator
+import statistics
+from collections import deque
+from collections.abc import Callable
+from typing import Literal
+
+import paho.mqtt.client as mqtt_client
+import requests
 from jsonpath_ng import parse
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, field_validator
+
+import mqtt
 from notification import send_action_notification
 
 logger = logging.getLogger(__name__)
@@ -35,12 +37,12 @@ SENSORS = {}
 class Sensor(BaseModel):
     name: str = Field(title="Sensor name")
     route: str = Field(title="mqtt path")
-    json_path: Optional[str] = None
+    json_path: str | None = None
     return_type: Literal["float", "int", "str", "bool"] = "float"
     connected: bool = False
     ready: bool = False
     value_list_length: int = 5
-    values: Optional[Deque[float | int | bool | str]] = None
+    values: deque[float | int | bool | str] | None = None
 
     def model_post_init(self, __context) -> None:
         if self.values is None:
@@ -143,11 +145,11 @@ def add_sensor(sensor):
 
 
 class SensorD(BaseModel):
-    ss: dict[str, Union[MqttSensor, HttpSensor, TimeSensor]] = {
+    ss: dict[str, MqttSensor | HttpSensor | TimeSensor] = {
         "time": TimeSensor(name="time", return_type="str")
     }
 
-    def add(self, sensor_data: Union[dict, MqttSensor, HttpSensor, TimeSensor]):
+    def add(self, sensor_data: dict | MqttSensor | HttpSensor | TimeSensor):
         if isinstance(sensor_data, dict):
             sensor_type = sensor_data.get("type", "mqtt")
             if sensor_type == "mqtt":
@@ -189,7 +191,7 @@ VALID_OPERATOR = {
 
 
 class Test(BaseModel):
-    sensor: Union[MqttSensor, HttpSensor, TimeSensor]
+    sensor: MqttSensor | HttpSensor | TimeSensor
     op: str
     _operator: Callable = PrivateAttr()
 
@@ -197,7 +199,7 @@ class Test(BaseModel):
     def operator(self):
         return self._operator
 
-    value: Union[float, str, int]
+    value: float | str | int
 
     @field_validator("op", mode="after")
     @classmethod
@@ -248,7 +250,7 @@ class Rule(BaseModel):
 
 class ConfigRule(BaseModel):
     name: str
-    tests: list[Tuple[str, str, Union[float, str, int]]]
+    tests: list[tuple[str, str, float | str | int]]
     action: str
     active: bool = True
 
@@ -259,7 +261,7 @@ class Mqtt(BaseModel):
     username: str
     password: str
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    client: Optional[mqtt_client.Client] = None
+    client: mqtt_client.Client | None = None
 
     def set_client(self, sensord):
         mqttc = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION2)
@@ -281,7 +283,7 @@ class Global(BaseModel):
 
 
 class Config(BaseModel):
-    global_: Optional[Global] = Field(None, alias="global")
+    global_: Global | None = Field(None, alias="global")
     mqtt: Mqtt
     sensors: list[dict]
     actions: list[Action]
