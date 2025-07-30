@@ -83,12 +83,6 @@ class Eplumber(BaseModel):
         self.rules = []
         self.http_sensors = []
 
-        # Stop existing timers
-        if self._http_timer:
-            self._http_timer.cancel()
-        if self._rules_thread:
-            self._rules_thread.cancel()
-
         self.config = models.Config(**cfg_json)
         for s in self.config.sensors:
             sensor = self.sensord.add(s)
