@@ -175,6 +175,7 @@ class Eplumber(BaseModel):
                 all_tests_pass = bool(all(t["passes"] for t in rule_tests))
                 if all_tests_pass and rule.active:
                     rule.action.do(rule)
+                    sleep(5)
                 rule_result = {
                     "action_name": f"{rule.name} ⇒ {rule.action.name}",
                     "tests": rule_tests,
