@@ -49,7 +49,7 @@ body {
     font-size: 14px !important;
     padding: 6px 12px !important;
   }
-
+  
   .action {
     font-size: 14px !important;
     padding: 8px 16px !important;
@@ -172,9 +172,6 @@ body {
   font-size: 24px;
   margin-right: 5px;
 }
-.test-emoji {
-  font-size: 12px !important;
-}
 
 .passing {
   background: #d4edda;
@@ -185,6 +182,8 @@ body {
   background: #f8d7da;
   color: #721c24;
 }
+
+
 
 h1 {
   font-size: 48px;
@@ -277,6 +276,7 @@ h2 {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
 .form-group {
   margin-bottom: 15px;
@@ -488,4 +488,22 @@ select.form-control {
 .separator {
   margin: 0 5px;
   color: #ccc;
+}
+.form-section h2 {
+  cursor: pointer;
+}
+
+.chevron {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  transition: transform 0.3s;
+  margin-left: 10px;
+}
+
+.chevron.collapsed {
+  transform: rotate(-135deg);
 }
