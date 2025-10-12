@@ -45,13 +45,11 @@
               {{ rule.action_name.split(' ⇒ ')[0] }}
               <span v-if="!rule.active" class="inactive-badge">INACTIVE</span>
             </div>
-            <div
-              v-for="test in rule.tests"
-              :key="test.sensor_name"
-              :class="['test', test.passes ? 'passing' : 'failing']"
-            >
-              <span>{{ test.sensor_name }}: {{ test.current_sensor_value }} {{ test.operator }} {{ test.value }}</span>
-              <span class="test-emoji">{{ test.passes ? '✅' : '❌' }}</span>
+            <div class="tests-container">
+              <span v-for="(test, i) in rule.tests" :key="i" :class="['test', test.passes ? 'passing' : 'failing']">
+                {{ test.sensor_name }} {{ test.operator }} {{ test.value }}
+                <span class="test-emoji">{{ test.passes ? '✅' : '❌' }}</span>
+              </span>
             </div>
           </div>
         </div>
