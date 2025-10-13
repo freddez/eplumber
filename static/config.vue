@@ -67,7 +67,7 @@
           <div v-for="(sensor, index) in config.sensors" :key="index" class="list-item">
             <div class="list-item-header">
               <span class="list-item-title">Sensor {{ index + 1 }}: {{ sensor.name || 'Unnamed' }}</span>
-              <button @click="removeSensor(index)" class="btn-remove">Remove</button>
+              <button @click="removeSensor(index)" class="btn-remove">➖</button>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -129,7 +129,7 @@
               <input v-model="sensor.comment" class="form-control" type="text" placeholder="Sensor description" />
             </div>
           </div>
-          <button @click="addSensor" class="btn-add">+ Add Sensor</button>
+          <button @click="addSensor" class="btn-add">➕ Sensor</button>
         </div>
       </div>
 
@@ -140,7 +140,7 @@
           <div v-for="(action, index) in config.actions" :key="index" class="list-item">
             <div class="list-item-header">
               <span class="list-item-title">Action {{ index + 1 }}: {{ action.name || 'Unnamed' }}</span>
-              <button @click="removeAction(index)" class="btn-remove">Remove</button>
+              <button @click="removeAction(index)" class="btn-remove">➖</button>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -158,7 +158,7 @@
               </div>
             </div>
           </div>
-          <button @click="addAction" class="btn-add">+ Add Action</button>
+          <button @click="addAction" class="btn-add">➕ Action</button>
         </div>
       </div>
 
@@ -168,10 +168,18 @@
         <div v-if="!collapsedSections.rules">
           <div v-for="(rule, ruleIndex) in config.rules" :key="ruleIndex" class="list-item">
             <div class="list-item-header">
-              <span class="list-item-title">Rule {{ ruleIndex + 1 }}: {{ rule.name || 'Unnamed' }}</span>
-              <button @click="removeRule(ruleIndex)" class="btn-remove">Remove</button>
+
+              <span class="test-item">{{ rule.name || 'Unnamed' }} > {{ rule.action }}</span>
+              <label style="test-item">
+                <input type="checkbox" v-model="rule.active" style="margin: 0; width: auto; height: auto" />
+                Active
+              </label>
+              <span class="test-item">
+                <button @click="rule.editDisplay=!rule.editDisplay" class="btn-add">⚙</button>
+                <button @click="removeRule(ruleIndex)" class="btn-remove">➖</button>
+              </span>
             </div>
-            <div class="form-row">
+            <div v-show="rule.editDisplay" class="form-row">
               <div class="form-group">
                 <label>Rule Name</label>
                 <input v-model="rule.name" class="form-control" type="text" placeholder="rule_name" />
@@ -185,52 +193,49 @@
                   </option>
                 </select>
               </div>
-              <div class="form-group">
-                <label style="display: flex; align-items: center; gap: 10px">
-                  <input type="checkbox" v-model="rule.active" style="margin: 0; width: auto; height: auto" />
-                  Active
-                </label>
-              </div>
             </div>
 
             <div style="margin-top: 15px">
-              <label style="font-weight: bold">Tests (All must pass for rule to trigger)</label>
-              <div v-for="(test, testIndex) in rule.tests" :key="testIndex" class="test-item">
+              <label style="font-weight: bold">Conditions</label>
+
+              <div class="tests-container">
+                <div v-for="(test, testIndex) in rule.tests" :key="testIndex" class="test-listitem">
+                  {{ test[0] }} {{ test[1] }} {{ test[2] }}
+                  <span v-if="testIndex != rule.tests.length - 1">AND</span>
+                </div>
+                <span class="test-item">
+                  <button @click="rule.editTests=!rule.editTests" class="btn-add">⚙</button>
+                </span>
+              </div>
+              <div v-show="rule.editTests" class="tests-container">
+                <div v-for="(test, testIndex) in rule.tests" :key="testIndex" class="test-item">
+                  <div class="test-row">
+                    <select v-model="test[0]" class="form-control">
+                      <option value="">Select Sensor</option>
+                      <option v-for="sensor in config.sensors" :key="sensor.name" :value="sensor.name">
+                        {{ sensor.name }}
+                      </option>
+                      <option value="time">time</option>
+                    </select>
+                    <select v-model="test[1]" class="form-control">
+                      <option value="<"><</option>
+                      <option value="<=">⩽</option>
+                      <option value=">">></option>
+                      <option value=">=">⩾</option>
+                      <option value="==">=</option>
+                      <option value="!=">≠</option>
+                    </select>
+                    <input v-model="test[2]" class="form-control" type="text" placeholder="Value (number, string, or boolean)" />
+                    <button @click="removeTest(ruleIndex, testIndex)" class="btn-remove-small">×</button>
+                  </div>
+                </div>
                 <div class="test-row">
-                  <select v-model="test[0]" class="form-control">
-                    <option value="">Select Sensor</option>
-                    <option v-for="sensor in config.sensors" :key="sensor.name" :value="sensor.name">
-                      {{ sensor.name }}
-                    </option>
-                    <option value="time">time</option>
-                  </select>
-                  <select v-model="test[1]" class="form-control">
-                    <option value="<"><</option>
-                    <option value="<="><=</option>
-                    <option value=">">></option>
-                    <option value=">=">>=</option>
-                    <option value="==">=</option>
-                    <option value="!=">!=</option>
-                  </select>
-                  <input
-                    v-model="test[2]"
-                    class="form-control"
-                    type="text"
-                    placeholder="Value (number, string, or boolean)"
-                  />
-                  <button @click="removeTest(ruleIndex, testIndex)" class="btn-remove-small">×</button>
+                  <button @click="addTest(ruleIndex)" class="btn-add">➕</button>
                 </div>
               </div>
-              <button
-                @click="addTest(ruleIndex)"
-                class="btn-add"
-                style="margin-top: 8px; padding: 5px 10px; font-size: 12px"
-              >
-                + Add Test
-              </button>
             </div>
           </div>
-          <button @click="addRule" class="btn-add">+ Add Rule</button>
+          <button @click="addRule" class="btn-add">➕ Rule</button>
         </div>
       </div>
 
@@ -281,6 +286,8 @@
               this.config = response.data.config
               if (this.config.rules) {
                 this.config.rules.forEach((rule) => {
+                  rule.editDisplay = false;
+                  rule.editTests = false;
                   if (rule.active === undefined || rule.active === null) {
                     rule.active = true
                   }
@@ -350,7 +357,9 @@
           },
 
           removeRule(index) {
-            this.config.rules.splice(index, 1)
+            if (confirm("Do you really want to remove this rule ?")) {
+               this.config.rules.splice(index, 1);
+            }
           },
 
           addTest(ruleIndex) {

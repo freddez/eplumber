@@ -49,7 +49,7 @@ body {
     font-size: 14px !important;
     padding: 6px 12px !important;
   }
-  
+
   .action {
     font-size: 14px !important;
     padding: 8px 16px !important;
@@ -183,8 +183,6 @@ body {
   color: #721c24;
 }
 
-
-
 h1 {
   font-size: 48px;
   margin: 0 0 16px 0;
@@ -307,15 +305,16 @@ h2 {
     margin-bottom: 5px !important;
   }
   .btn-remove {
-    padding: 5px 10px !important;
+    padding: 3px;
     font-size: 12px !important;
-    border-radius: 3px !important;
+    border-radius: 4px !important;
+    margin-right: 10px !important;
   }
   .btn-add {
-    padding: 8px 15px !important;
-    font-size: 14px !important;
+    padding: 3px;
+    font-size: 14px; !important;
     border-radius: 4px !important;
-    margin-top: 10px !important;
+    margin-right: 10px !important;
   }
   .nav-buttons a {
     padding: 10px 20px !important;
@@ -324,7 +323,6 @@ h2 {
     margin-right: 10px !important;
   }
   .btn {
-    padding: 10px 20px !important;
     font-size: 14px !important;
     border-radius: 4px !important;
     margin-right: 10px !important;
@@ -361,11 +359,12 @@ h2 {
   color: #495057;
 }
 .btn-remove {
+    padding: 3px;
+    margin-right: 10px !important;
   background: #dc3545;
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 24px;
 }
@@ -373,14 +372,14 @@ h2 {
   background: #c82333;
 }
 .btn-add {
+    padding: 3px;
+    margin-right: 10px !important;
   background: #28a745;
   color: white;
   border: none;
-  padding: 16px 30px;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 20px;
-  font-size: 24px;
+  font-size: 14px;
 }
 .btn-add:hover {
   background: #218838;
@@ -402,7 +401,6 @@ h2 {
   background: #1976d2;
 }
 .btn {
-  padding: 20px 40px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -451,6 +449,9 @@ h2 {
   border-radius: 4px;
   padding: 10px;
   margin-bottom: 8px;
+}
+.test-listitem {
+  padding-left: 0.5em;
 }
 .test-row {
   display: flex;
