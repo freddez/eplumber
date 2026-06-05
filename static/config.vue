@@ -7,14 +7,11 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/static/css/main.css" />
-    <style>
-      *, *::before, *::after { box-sizing: border-box; }
-    </style>
   </head>
   <body>
     <div id="app" class="config-editor">
       <div class="header-container">
-        <div class="logo-container"><img src="/logo.svg" alt="Eplumber Logo" class="logo" />🔧</div>
+        <div class="logo-container"><img src="/logo.svg" alt="Eplumber Logo" class="logo" /></div>
 
         <div class="controls">
           <div class="nav-buttons">
