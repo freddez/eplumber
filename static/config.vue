@@ -1,11 +1,15 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Eplumber Config Editor</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/static/css/main.css" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+    </style>
   </head>
   <body>
     <div id="app" class="config-editor">
@@ -168,16 +172,15 @@
         <div v-if="!collapsedSections.rules">
           <div v-for="(rule, ruleIndex) in config.rules" :key="ruleIndex" class="list-item">
             <div class="list-item-header">
-
-              <span class="test-item">{{ rule.name || 'Unnamed' }} > {{ rule.action }}</span>
-              <label style="test-item">
+              <span class="rule-label">{{ rule.name || 'Unnamed' }} > {{ rule.action }}</span>
+              <label class="rule-active-label">
                 <input type="checkbox" v-model="rule.active" style="margin: 0; width: auto; height: auto" />
                 Active
               </label>
-              <span class="test-item">
+              <div class="btn-group">
                 <button @click="rule.editDisplay=!rule.editDisplay" class="btn-add">⚙</button>
                 <button @click="removeRule(ruleIndex)" class="btn-remove">➖</button>
-              </span>
+              </div>
             </div>
             <div v-show="rule.editDisplay" class="form-row">
               <div class="form-group">
@@ -203,9 +206,9 @@
                   {{ test[0] }} {{ test[1] }} {{ test[2] }}
                   <span v-if="testIndex != rule.tests.length - 1">AND</span>
                 </div>
-                <span class="test-item">
+                <div class="btn-group">
                   <button @click="rule.editTests=!rule.editTests" class="btn-add">⚙</button>
-                </span>
+                </div>
               </div>
               <div v-show="rule.editTests" class="tests-container">
                 <div v-for="(test, testIndex) in rule.tests" :key="testIndex" class="test-item">
@@ -217,7 +220,7 @@
                       </option>
                       <option value="time">time</option>
                     </select>
-                    <select v-model="test[1]" class="form-control">
+                    <select v-model="test[1]" class="form-control operator-select">
                       <option value="<"><</option>
                       <option value="<=">⩽</option>
                       <option value=">">></option>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Eplumber Monitor</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>

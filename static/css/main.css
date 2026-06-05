@@ -1,22 +1,34 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
-  padding: 10px;
+  padding: 12px;
   background: #f8f9fa;
-  font-size: 28px;
+  font-size: 16px;
 }
+
+@media (min-width: 768px) {
+  body {
+    padding: 20px;
+    font-size: 16px;
+  }
+}
+
+/* ── Header ─────────────────────────────────────────── */
 
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  gap: 12px;
 }
 
 .logo {
-  height: 50px;
+  height: 40px;
   vertical-align: middle;
 }
+
+/* ── Dashboard layout ────────────────────────────────── */
 
 .dashboard {
   display: grid;
@@ -25,34 +37,10 @@ body {
   max-width: 100%;
 }
 
-/* Mobile-first responsive design */
-@media (min-width: 1200px) {
-  body {
-    padding: 20px;
-    font-size: 16px;
-  }
+@media (min-width: 900px) {
   .dashboard {
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  h1 {
-    font-size: 32px !important;
-  }
-  h2 {
-    font-size: 18px !important;
-  }
-  .refresh-btn {
-    font-size: 16px !important;
-    padding: 10px 20px !important;
-  }
-  .test {
-    font-size: 14px !important;
-    padding: 6px 12px !important;
-  }
-
-  .action {
-    font-size: 14px !important;
-    padding: 8px 16px !important;
+    gap: 16px;
   }
 }
 
@@ -74,6 +62,71 @@ body {
     padding: 16px;
   }
 }
+
+/* ── Headings ────────────────────────────────────────── */
+
+h1 {
+  font-size: 28px;
+  margin: 0 0 16px 0;
+  color: #343a40;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 32px;
+    text-align: left;
+  }
+}
+
+h2 {
+  color: #495057;
+  border-bottom: 2px solid #28a745;
+  padding-bottom: 4px;
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ── Controls / buttons ──────────────────────────────── */
+
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.refresh-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+  min-height: 40px;
+}
+
+.refresh-btn:hover {
+  background: #218838;
+}
+
+.config-btn {
+  background: #007bff;
+}
+
+.config-btn:hover {
+  background: #0056b3;
+}
+
+/* ── Sensor / Rule / Action display (dashboard) ──────── */
 
 .sensor {
   margin-bottom: 8px;
@@ -108,12 +161,12 @@ body {
 }
 
 .action {
-  margin-bottom: 12px;
-  padding: 12px 20px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
   background: #e7f3ff;
   border-radius: 8px;
-  font-size: 26px;
-  border-left: 6px solid #007bff;
+  font-size: 16px;
+  border-left: 4px solid #007bff;
 }
 
 .rule {
@@ -160,17 +213,17 @@ body {
   color: white;
   padding: 2px 6px;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   margin-left: 8px;
 }
 
 .test {
-  margin: 8px 0;
-  padding: 2px 6px;
+  display: inline-block;
+  margin: 4px 4px 4px 0;
+  padding: 3px 9px;
   border-radius: 3px;
-  font-size: 24px;
-  margin-right: 5px;
+  font-size: 15px;
 }
 
 .passing {
@@ -183,72 +236,6 @@ body {
   color: #721c24;
 }
 
-h1 {
-  font-size: 48px;
-  margin: 0 0 16px 0;
-  color: #343a40;
-  text-align: center;
-}
-
-@media (min-width: 768px) {
-  h1 {
-    font-size: 56px;
-    text-align: left;
-  }
-}
-
-h2 {
-  color: #495057;
-  border-bottom: 2px solid #28a745;
-  padding-bottom: 4px;
-  margin: 0 0 12px 0;
-  font-size: 32px;
-  font-weight: 600;
-}
-
-.controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  /* justify-content: center; */ /* Removed as flexbox handles alignment */
-}
-
-@media (min-width: 768px) {
-  .controls {
-    justify-content: flex-start;
-  }
-}
-
-.refresh-btn {
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 28px;
-  font-weight: 500;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  transition: background-color 0.2s;
-}
-
-.refresh-btn:hover {
-  background: #218838;
-}
-
-.config-btn {
-  background: #007bff;
-}
-
-.config-btn:hover {
-  background: #0056b3;
-}
-
-/* Compact status indicators */
 .status-dot {
   width: 8px;
   height: 8px;
@@ -260,239 +247,305 @@ h2 {
 .status-dot.connected {
   background: #28a745;
 }
+
 .status-dot.disconnected {
   background: #dc3545;
 }
 
+/* ── Config editor ───────────────────────────────────── */
+
 .config-editor {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
 }
+
 .form-section {
   background: white;
-  padding: 20px;
+  padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
+  margin-bottom: 16px;
 }
+
+.form-section h2 {
+  cursor: pointer;
+  user-select: none;
+}
+
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
+
 .form-group label {
   display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: #333;
-  font-size: 24px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #444;
+  font-size: 15px;
 }
+
 .form-control {
   width: 100%;
-  padding: 16px 24px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 28px;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  min-height: 42px;
+  background: white;
 }
-@media (min-width: 1200px) {
-  .form-control {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  .form-group label {
-    font-size: 14px !important;
-    margin-bottom: 5px !important;
-  }
-  .btn-remove {
-    padding: 3px;
-    font-size: 12px !important;
-    border-radius: 4px !important;
-    margin-right: 10px !important;
-  }
-  .btn-add {
-    padding: 3px;
-    font-size: 14px; !important;
-    border-radius: 4px !important;
-    margin-right: 10px !important;
-  }
-  .nav-buttons a {
-    padding: 10px 20px !important;
-    font-size: 14px !important;
-    border-radius: 4px !important;
-    margin-right: 10px !important;
-  }
-  .btn {
-    font-size: 14px !important;
-    border-radius: 4px !important;
-    margin-right: 10px !important;
-  }
-}
+
 .form-control:focus {
   outline: none;
   border-color: #4caf50;
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
+
 .form-row {
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  gap: 0;
 }
-.form-row .form-group {
-  flex: 1;
+
+@media (min-width: 600px) {
+  .form-row {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .form-row .form-group {
+    flex: 1;
+  }
 }
+
+/* ── List items (sensor / action / rule cards) ────────── */
+
 .list-item {
   background: #f8f9fa;
   border: 1px solid #e9ecef;
-  border-radius: 4px;
-  padding: 15px;
+  border-radius: 6px;
+  padding: 12px;
   margin-bottom: 10px;
   position: relative;
 }
+
 .list-item-header {
   display: flex;
-  justify-content: between;
   align-items: center;
   margin-bottom: 10px;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
+
 .list-item-title {
-  font-weight: bold;
+  font-weight: 600;
   color: #495057;
+  font-size: 16px;
+  flex: 1;
 }
-.btn-remove {
-    padding: 3px;
-    margin-right: 10px !important;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 24px;
+
+.rule-label {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: #495057;
+  font-size: 15px;
 }
-.btn-remove:hover {
-  background: #c82333;
+
+.rule-active-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 15px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
-.btn-add {
-    padding: 3px;
-    margin-right: 10px !important;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
+
+.btn-group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
 }
-.btn-add:hover {
-  background: #218838;
-}
-.nav-buttons {
-  margin-bottom: 20px;
-}
-.nav-buttons a {
-  display: inline-block;
-  padding: 20px 40px;
-  background: #2196f3;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  margin-right: 20px;
-  font-size: 24px;
-}
-.nav-buttons a:hover {
-  background: #1976d2;
-}
+
+/* ── Buttons ─────────────────────────────────────────── */
+
 .btn {
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  margin-right: 20px;
-  font-size: 24px;
+  font-size: 16px;
+  padding: 9px 18px;
+  min-height: 40px;
 }
+
 .btn-primary {
   background: #4caf50;
   color: white;
 }
+
 .btn-primary:hover {
   background: #45a049;
 }
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .btn-secondary {
   background: #6c757d;
   color: white;
 }
+
 .btn-secondary:hover {
   background: #5a6268;
 }
-.status-message {
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 15px;
+
+.btn-remove {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 5px 10px;
+  min-height: 34px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
+
+.btn-remove:hover {
+  background: #c82333;
+}
+
+.btn-add {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 5px 10px;
+  min-height: 34px;
+  white-space: nowrap;
+}
+
+.btn-add:hover {
+  background: #218838;
+}
+
+.btn-remove-small {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  min-height: 34px;
+  flex-shrink: 0;
+}
+
+/* ── Nav buttons ─────────────────────────────────────── */
+
+.nav-buttons {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.nav-buttons a {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: #2196f3;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 15px;
+  min-height: 38px;
+  white-space: nowrap;
+}
+
+.nav-buttons a:hover {
+  background: #1976d2;
+}
+
+/* ── Status messages ─────────────────────────────────── */
+
+.status-message {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-size: 16px;
+}
+
 .status-success {
   background: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
 }
+
 .status-error {
   background: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
 .validation-errors {
   background: #fff3cd;
   color: #856404;
   border: 1px solid #ffeaa7;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 15px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  font-size: 16px;
 }
-.test-item {
-  background: #e9ecef;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 8px;
-}
-.test-listitem {
-  padding-left: 0.5em;
-}
-.test-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.test-row select,
-.test-row input {
-  flex: 1;
-}
-.btn-remove-small {
-  background: #dc3545;
-  color: white;
-  border: none;
-  padding: 3px 8px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 11px;
-}
-select.form-control {
-  cursor: pointer;
-}
+
+/* ── Rule conditions ─────────────────────────────────── */
 
 .tests-container {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-top: 5px;
+  gap: 6px;
+  margin-top: 6px;
 }
 
-.test {
-  margin-right: 5px;
+.test-item {
+  background: #e9ecef;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 15px;
 }
 
-.separator {
-  margin: 0 5px;
-  color: #ccc;
+.test-listitem {
+  padding: 2px 6px;
+  font-size: 15px;
+  color: #495057;
 }
-.form-section h2 {
-  cursor: pointer;
+
+.test-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
 }
+
+.test-row select,
+.test-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.operator-select {
+  flex: 0 0 50px;
+  padding-left: 4px;
+  padding-right: 4px;
+  text-align: center;
+}
+
+/* ── Chevron (collapse indicator) ───────────────────── */
 
 .chevron {
   display: inline-block;
@@ -501,10 +554,16 @@ select.form-control {
   border-style: solid;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
-  transition: transform 0.3s;
+  transition: transform 0.25s;
   margin-left: 10px;
+  vertical-align: middle;
 }
 
 .chevron.collapsed {
   transform: rotate(-135deg);
+}
+
+.separator {
+  margin: 0 5px;
+  color: #ccc;
 }
